@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 Leitura Guiada Estendida — Cap. 4</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1a0033 0%, #0d001a 50%, #001a2e 100%);
+    color: #e8e8f0;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+  }
+
+  .container { max-width: 950px; margin: 0 auto; }
+
+  /* CAPA */
+  .capa {
+    background: linear-gradient(135deg, #4a148c 0%, #1a237e 50%, #006064 100%);
+    border: 3px solid #ba68c8;
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(186, 104, 200, 0.4);
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capa::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: stars 20s linear infinite;
+  }
+  @keyframes stars {
+    from { transform: translate(0,0); }
+    to { transform: translate(-30px,-30px); }
+  }
+  .capa h1 {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 0 0 15px #ba68c8;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .capa .sub { color: #e1bee7; font-size: 1em; position: relative; margin-bottom: 12px; }
+  .capa .narr {
+    color: #fff59d;
+    font-size: 0.95em;
+    font-style: italic;
+    position: relative;
+    border-top: 1px dashed #ba68c8;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  /* PROGRESSO GERAL */
+  .progresso-geral {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #ba68c8;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .progresso-info {
+    color: #e1bee7;
+    font-size: 0.9em;
+  }
+  .progresso-info b { color: #ffd54f; }
+  .progresso-barra-wrap {
+    flex: 1;
+    min-width: 200px;
+    height: 14px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ba68c8;
+  }
+  .progresso-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ba68c8, #4fc3f7);
+    width: 0%;
+    transition: width 0.6s;
+  }
+
+  /* PAINEL DE SALVAMENTO */
+  .painel-salvar {
+    background: rgba(46, 125, 50, 0.2);
+    border: 2px solid #66bb6a;
+    border-radius: 12px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9em;
+  }
+  .painel-salvar .info-salvar {
+    color: #c8e6c9;
+    flex: 1;
+    min-width: 220px;
+  }
+  .painel-salvar .info-salvar b { color: #fff; }
+  .painel-salvar .auto-salvo::before {
+    content: "💾 ";
+  }
+  .botoes-salvar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-salvar {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid #66bb6a;
+    color: #c8e6c9;
+    padding: 6px 14px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 700;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+  .btn-salvar:hover {
+    background: rgba(102, 187, 106, 0.3);
+    transform: translateY(-1px);
+  }
+  .btn-salvar.zerar {
+    border-color: #ef5350;
+    color: #ffcdd2;
+  }
+  .btn-salvar.zerar:hover {
+    background: rgba(239, 83, 80, 0.3);
+  }
+
+  /* TOAST DE NOTIFICAÇÃO */
+  .toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 2px solid #66bb6a;
+    z-index: 1000;
+    font-weight: 700;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s;
+  }
+  .toast.visivel {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* MAPA DE SEÇÕES */
+  .mapa-secoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #5c6bc0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  .mapa-secoes-titulo {
+    width: 100%;
+    text-align: center;
+    color: #9fa8da;
+    font-size: 0.85em;
+    margin-bottom: 6px;
+  }
+  .mapa-item {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid #5c6bc0;
+    color: #aab;
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: not-allowed;
+    transition: all 0.3s;
+    opacity: 0.5;
+  }
+  .mapa-item.disponivel {
+    cursor: pointer;
+    opacity: 1;
+    color: #e1bee7;
+    border-color: #ba68c8;
+  }
+  .mapa-item.disponivel:hover {
+    background: rgba(186, 104, 200, 0.2);
+    transform: translateY(-2px);
+  }
+  .mapa-item.atual {
+    background: #ba68c8;
+    color: #1a0033;
+    border-color: #fff;
+  }
+  .mapa-item.concluida {
+    background: rgba(46, 125, 50, 0.4);
+    border-color: #66bb6a;
+    color: #fff;
+    opacity: 1;
+  }
+  .mapa-item.concluida::after { content: " ✓"; }
+
+  /* SEÇÕES */
+  .secao {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #ba68c8;
+    border-radius: 15px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(10px);
+    display: none;
+    animation: fadeIn 0.5s;
+  }
+  .secao.ativa { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    color: #ba68c8;
+    font-size: 1.6em;
+    border-bottom: 2px solid #ba68c8;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+    text-shadow: 0 0 10px rgba(186, 104, 200, 0.5);
+  }
+  h3 {
+    color: #4fc3f7;
+    font-size: 1.2em;
+    margin: 18px 0 8px 0;
+    border-left: 4px solid #4fc3f7;
+    padding-left: 10px;
+  }
+  h4 {
+    color: #aed581;
+    font-size: 1.05em;
+    margin: 12px 0 6px 0;
+  }
+
+  p { margin-bottom: 12px; color: #e8e8f0; }
+  p b, li b { color: #ffd54f; }
+  ul, ol { margin: 8px 0 12px 25px; }
+  li { margin-bottom: 5px; color: #e8e8f0; }
+
+  /* CONCEITO CARD */
+  .conceito-card {
+    background: linear-gradient(135deg, rgba(94, 53, 177, 0.3), rgba(26, 35, 126, 0.3));
+    border-left: 4px solid #7e57c2;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin: 15px 0;
+  }
+  .conceito-card .titulo {
+    color: #b39ddb;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+  }
+
+  /* FÓRMULA */
+  .formula {
+    background: rgba(0, 0, 0, 0.4);
+    border-left: 4px solid #4fc3f7;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #b3e5fc;
+    margin: 12px 0;
+    font-size: 1.02em;
+    line-height: 1.7;
+  }
+
+  /* EXEMPLO */
+  .exemplo {
+    background: rgba(46, 125, 50, 0.15);
+    border: 1.5px solid #66bb6a;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+  }
+  .exemplo-titulo {
+    color: #a5d6a7;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1em;
+  }
+  .exemplo-titulo::before { content: "📘 "; }
+
+  /* ALERTA */
+  .alerta {
+    background: rgba(183, 28, 28, 0.2);
+    border: 2px solid #ef5350;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .alerta-titulo {
+    color: #ef9a9a;
+    font-weight: 900;
+    margin-bottom: 6px;
+    font-size: 1.05em;
+  }
+
+  /* POST-IT */
+  .post-it {
+    background: rgba(249, 168, 37, 0.2);
+    border: 1.5px dashed #ffd54f;
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    color: #fff9c4;
+  }
+  .post-it::before {
+    content: "💡 DICA: ";
+    color: #ffd54f;
+    font-weight: 900;
+  }
+
+  /* CAIXA DE FIXAÇÃO */
+  .fixacao-box {
+    background: linear-gradient(135deg, rgba(173, 20, 87, 0.3), rgba(74, 20, 140, 0.3));
+    border: 2.5px solid #ec407a;
+    border-radius: 15px;
+    padding: 22px;
+    margin: 25px 0;
+    box-shadow: 0 0 25px rgba(236, 64, 122, 0.3);
+  }
+  .fixacao-titulo {
+    color: #f8bbd0;
+    font-size: 1.25em;
+    font-weight: 900;
+    margin-bottom: 8px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(236, 64, 122, 0.5);
+  }
+  .fixacao-subtitulo {
+    color: #f48fb1;
+    text-align: center;
+    font-size: 0.9em;
+    font-style: italic;
+    margin-bottom: 15px;
+  }
+  .fixacao-progresso {
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+    padding: 6px 14px;
+    margin: 0 auto 15px auto;
+    width: fit-content;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9em;
+    border: 1px solid #ec407a;
+  }
+
+  .exercicio {
+    background: rgba(0,0,0,0.3);
+    border: 2px solid #5c6bc0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .exercicio-num {
+    display: inline-block;
+    background: #ec407a;
+    color: #fff;
+    padding: 3px 12px;
+    border-radius: 15px;
+    font-weight: 900;
+    font-size: 0.85em;
+    margin-bottom: 8px;
+  }
+  .exercicio-pergunta {
+    color: #fff;
+    margin-bottom: 12px;
+    font-size: 1em;
+  }
+  .exercicio-pergunta b {
+    color: #ffd54f;
+    font-family: 'Courier New', monospace;
+  }
+
+  .alternativas-fix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .alt-fix {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid #5c6bc0;
+    color: #e8e8f0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    text-align: left;
+    transition: all 0.3s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .alt-fix:hover:not(:disabled) {
+    background: rgba(186, 104, 200, 0.2);
+    border-color: #ba68c8;
+  }
+  .alt-fix .letra {
+    background: rgba(186, 104, 200, 0.3);
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    flex-shrink: 0;
+    font-size: 0.85em;
+  }
+  .alt-fix.correta {
+    background: rgba(46, 125, 50, 0.4);
+    border-color: #66bb6a;
+  }
+  .alt-fix.correta .letra { background: #66bb6a; }
+  .alt-fix.errada {
+    background: rgba(183, 28, 28, 0.4);
+    border-color: #ef5350;
+  }
+  .alt-fix.errada .letra { background: #ef5350; }
+  .alt-fix:disabled { cursor: default; }
+  .alt-fix.desativada { opacity: 0.4; }
+
+  .feedback-fix {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    line-height: 1.45;
+    display: none;
+    animation: fadeIn 0.4s;
+  }
+  .feedback-fix.acerto {
+    background: rgba(46, 125, 50, 0.25);
+    border-left: 3px solid #66bb6a;
+    color: #c8e6c9;
+    display: block;
+  }
+  .feedback-fix.erro {
+    background: rgba(183, 28, 28, 0.25);
+    border-left: 3px solid #ef5350;
+    color: #ffcdd2;
+    display: block;
+  }
+  .feedback-fix b { color: #ffd54f; }
+  .feedback-fix .titulo-fb {
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  /* RESULTADO DA FIXAÇÃO */
+  .resultado-fix {
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    text-align: center;
+    display: none;
+  }
+  .resultado-fix.visivel { display: block; animation: fadeIn 0.5s; }
+  .resultado-fix .pontuacao-fix {
+    font-size: 1.4em;
+    font-weight: 900;
+    color: #ffd54f;
+    margin-bottom: 8px;
+  }
+  .resultado-fix .mensagem-fix {
+    color: #e1bee7;
+    margin-bottom: 12px;
+    font-size: 0.95em;
+  }
+  .resultado-fix .mensagem-fix.bloqueado {
+    color: #ffcdd2;
+  }
+
+  /* BOTÕES NAVEGAÇÃO */
+  .nav-secao {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .btn-nav {
+    background: linear-gradient(135deg, #5c6bc0, #3949ab);
+    color: #fff;
+    border: 2px solid #7986cb;
+    padding: 12px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95em;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 140px;
+  }
+  .btn-nav:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(124, 137, 203, 0.5);
+  }
+  .btn-nav:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .btn-proxima {
+    background: linear-gradient(135deg, #66bb6a, #2e7d32) !important;
+    border-color: #aed581 !important;
+  }
+  .btn-proxima:disabled {
+    background: linear-gradient(135deg, #424242, #212121) !important;
+    border-color: #555 !important;
+  }
+  .btn-tentar {
+    background: linear-gradient(135deg, #ec407a, #ad1457) !important;
+    border-color: #f48fb1 !important;
+  }
+
+  /* CHECKLIST FINAL */
+  .checklist {
+    list-style: none;
+    margin: 15px 0;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 10px 15px;
+    background: rgba(173, 20, 87, 0.15);
+    border-left: 3px solid #ec407a;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    user-select: none;
+    color: #e8e8f0;
+  }
+  .checklist li::before {
+    content: "☐ ";
+    color: #ec407a;
+    font-weight: 900;
+    margin-right: 8px;
+  }
+  .checklist li.marcado {
+    background: rgba(46, 125, 50, 0.25);
+    border-left-color: #66bb6a;
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  .checklist li.marcado::before {
+    content: "✅ ";
+    color: #66bb6a;
+  }
+
+  /* TABELA */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid rgba(186, 104, 200, 0.4);
+    padding: 8px 12px;
+    text-align: center;
+  }
+  th {
+    background: rgba(186, 104, 200, 0.3);
+    color: #f3e5f5;
+    font-weight: 700;
+  }
+  td { color: #e8e8f0; }
+
+  /* NARRATIVA */
+  .narr-box {
+    background: linear-gradient(90deg, rgba(186, 104, 200, 0.15), transparent);
+    border-left: 4px solid #ba68c8;
+    padding: 12px 18px;
+    margin: 15px 0;
+    color: #e1bee7;
+    font-style: italic;
+  }
+  .narr-box::before { content: "🔮 "; }
+
+  /* CELEBRAÇÃO FINAL */
+  .celebracao {
+    background: linear-gradient(135deg, #4a148c 0%, #006064 100%);
+    border: 3px solid #ffd54f;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    margin-top: 20px;
+    box-shadow: 0 0 40px rgba(255, 213, 79, 0.5);
+    animation: brilho 2s ease-in-out infinite alternate;
+  }
+  @keyframes brilho {
+    from { box-shadow: 0 0 40px rgba(255, 213, 79, 0.4); }
+    to { box-shadow: 0 0 60px rgba(255, 213, 79, 0.7); }
+  }
+  .celebracao h2 {
+    color: #ffd54f;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    border: none;
+  }
+  .celebracao .titulo-mago {
+    background: rgba(0,0,0,0.4);
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin: 15px auto;
+    color: #ffd54f;
+    font-size: 1.2em;
+    font-weight: 700;
+    border: 2px solid #ffd54f;
+    max-width: 400px;
+  }
+
+  sup { font-size: 75%; vertical-align: super; line-height: 0; }
+
+  @media (max-width: 600px) {
+    .alternativas-fix { grid-template-columns: 1fr; }
+    .capa h1 { font-size: 1.5em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- CAPA -->
+  <div class="capa">
+    <h1>📚 Leitura Guiada Estendida</h1>
+    <div class="sub">Cap. 4: Potenciação e Raiz Quadrada • 7º ano • pp. 68-78</div>
+    <div class="narr">⚔️ Bem-vinda à Academia, jovem aprendiz! Aqui você vai aprender e fixar cada feitiço antes de avançar — só passa de seção quem domina o conteúdo. Leia, pratique, conquiste!</div>
+  </div>
+
+  <!-- PROGRESSO GERAL -->
+  <div class="progresso-geral">
+    <div class="progresso-info">📖 Seção <b id="secao-atual">1</b>/8 • Acertos: <b id="acertos-totais">0</b>/26</div>
+    <div class="progresso-barra-wrap"><div class="progresso-fill" id="progresso-fill"></div></div>
+  </div>
+
+  <!-- PAINEL DE SALVAMENTO -->
+  <div class="painel-salvar">
+    <div class="info-salvar">
+      <span class="auto-salvo">Progresso salvo automaticamente neste navegador</span><br>
+      <span style="font-size: 0.85em; opacity: 0.85;">Último salvamento: <b id="ultimo-salvar">—</b></span>
+    </div>
+    <div class="botoes-salvar">
+      <button class="btn-salvar" onclick="exportarProgresso()">📥 Exportar progresso</button>
+      <button class="btn-salvar" onclick="document.getElementById('input-importar').click()">📤 Importar progresso</button>
+      <button class="btn-salvar zerar" onclick="zerarProgresso()">🗑️ Zerar tudo</button>
+      <input type="file" id="input-importar" accept=".json" style="display:none" onchange="importarProgresso(event)">
+    </div>
+  </div>
+
+  <!-- MAPA DE SEÇÕES -->
+  <div class="mapa-secoes">
+    <div class="mapa-secoes-titulo">🗺️ Mapa da Jornada (clique nas seções desbloqueadas)</div>
+    <div class="mapa-item disponivel atual" data-secao="0" onclick="navegar(0)">1. Lenda</div>
+    <div class="mapa-item" data-secao="1" onclick="navegar(1)">2. Potenciação</div>
+    <div class="mapa-item" data-secao="2" onclick="navegar(2)">3. Sinais</div>
+    <div class="mapa-item" data-secao="3" onclick="navegar(3)">4. Exp. zero e 1</div>
+    <div class="mapa-item" data-secao="4" onclick="navegar(4)">5. Propriedades</div>
+    <div class="mapa-item" data-secao="5" onclick="navegar(5)">6. Notação</div>
+    <div class="mapa-item" data-secao="6" onclick="navegar(6)">7. Raiz quadrada</div>
+    <div class="mapa-item" data-secao="7" onclick="navegar(7)">8. Expressões</div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 1: A LENDA DO TABULEIRO
+       ================================================= -->
+  <div class="secao ativa" id="secao-0">
+    <h2>🏰 Seção 1 — A Lenda do Tabuleiro de Xadrez</h2>
+
+    <div class="narr-box">
+    Sua jornada começa na Índia antiga, quando um sábio descobriu o primeiro Feitiço de Multiplicação Repetida...
+    </div>
+
+    <p>O sábio <b>Lahur Sessa</b> pediu ao rei Iadava grãos de trigo: <b>1 grão</b> na primeira casa do tabuleiro de xadrez, <b>2 grãos</b> na segunda, <b>4 grãos</b> na terceira, <b>8 grãos</b> na quarta… <b>sempre dobrando</b>. O rei riu — mas nem em mil anos a Índia conseguiria pagar!</p>
+
+    <h3>🔢 O padrão do tabuleiro</h3>
+    <div class="formula">
+1ª casa: 1 = 2⁰<br>
+2ª casa: 2 = 2¹<br>
+3ª casa: 4 = 2·2 = 2²<br>
+4ª casa: 8 = 2·2·2 = 2³<br>
+5ª casa: 16 = 2·2·2·2 = 2⁴<br>
+8ª casa: 256 = 2⁸
+    </div>
+
+    <p>Em vez de escrever a multiplicação inteira, criamos um feitiço chamado <b>POTENCIAÇÃO</b>: uma forma curta de representar multiplicações de fatores iguais.</p>
+
+    <div class="post-it">A última casa do tabuleiro tem 2⁶³ grãos — um número com 19 dígitos!</div>
+
+    <!-- FIXAÇÃO 1 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Identifique os padrões de potências</div>
+      <div class="fixacao-progresso" id="fix-prog-0">Acertos: 0/2</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">Seguindo a lenda, quantos grãos haveria na <b>6ª casa</b> do tabuleiro?</div>
+        <div class="alternativas-fix" data-fix="0-0">
+          <button class="alt-fix" onclick="responderFix(0, 0, 0, this)"><span class="letra">a</span><span>16 grãos</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 0, 1, this)"><span class="letra">b</span><span>32 grãos</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 0, 2, this)"><span class="letra">c</span><span>64 grãos</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 0, 3, this)"><span class="letra">d</span><span>12 grãos</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-0-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">Olhando o padrão, qual destas igualdades está <b>CORRETA</b>?</div>
+        <div class="alternativas-fix" data-fix="0-1">
+          <button class="alt-fix" onclick="responderFix(0, 1, 0, this)"><span class="letra">a</span><span>2⁵ = 10</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 1, 1, this)"><span class="letra">b</span><span>2⁵ = 25</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 1, 2, this)"><span class="letra">c</span><span>2⁵ = 32</span></button>
+          <button class="alt-fix" onclick="responderFix(0, 1, 3, this)"><span class="letra">d</span><span>2⁵ = 64</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-0-1"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-0"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" disabled>← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-0" disabled onclick="proximaSecao(0)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 2: ANATOMIA DA POTENCIAÇÃO
+       ================================================= -->
+  <div class="secao" id="secao-1">
+    <h2>⚡ Seção 2 — Anatomia da Potenciação</h2>
+
+    <p>A potenciação é a <b>multiplicação de fatores iguais</b>. Tem 3 partes principais:</p>
+
+    <div class="formula">
+3⁵ = 3 · 3 · 3 · 3 · 3 = 243<br>
+↑     ↑                    ↑<br>
+base  expoente             potência (resultado)
+    </div>
+
+    <div class="conceito-card">
+      <div class="titulo">🎯 Os 3 elementos:</div>
+      <ul>
+        <li><b>Base (3):</b> o número que será multiplicado</li>
+        <li><b>Expoente (5):</b> quantas vezes a base aparece na multiplicação</li>
+        <li><b>Potência (243):</b> o resultado</li>
+      </ul>
+    </div>
+
+    <div class="post-it">Lê-se "três elevado à quinta potência" ou "três à quinta".</div>
+
+    <h3>📐 Exemplos resolvidos</h3>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Cálculos:</div>
+      4³ = 4·4·4 = 64<br>
+      2⁵ = 2·2·2·2·2 = 32<br>
+      10² = 10·10 = 100<br>
+      6¹ = 6 (qualquer número à 1ª potência é ele mesmo)
+    </div>
+
+    <!-- FIXAÇÃO 2 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Identifique os elementos e calcule potências simples</div>
+      <div class="fixacao-progresso" id="fix-prog-1">Acertos: 0/3</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">Na potência <b>7³</b>, qual é a <b>base</b>?</div>
+        <div class="alternativas-fix" data-fix="1-0">
+          <button class="alt-fix" onclick="responderFix(1, 0, 0, this)"><span class="letra">a</span><span>3</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 0, 1, this)"><span class="letra">b</span><span>7</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 0, 2, this)"><span class="letra">c</span><span>21</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 0, 3, this)"><span class="letra">d</span><span>343</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-1-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">Qual é o valor de <b>5³</b>?</div>
+        <div class="alternativas-fix" data-fix="1-1">
+          <button class="alt-fix" onclick="responderFix(1, 1, 0, this)"><span class="letra">a</span><span>15</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 1, 1, this)"><span class="letra">b</span><span>25</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 1, 2, this)"><span class="letra">c</span><span>125</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 1, 3, this)"><span class="letra">d</span><span>53</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-1-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3</div>
+        <div class="exercicio-pergunta">A multiplicação <b>4·4·4·4·4·4</b> escrita como potência fica:</div>
+        <div class="alternativas-fix" data-fix="1-2">
+          <button class="alt-fix" onclick="responderFix(1, 2, 0, this)"><span class="letra">a</span><span>4⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 2, 1, this)"><span class="letra">b</span><span>4⁵</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 2, 2, this)"><span class="letra">c</span><span>4⁶</span></button>
+          <button class="alt-fix" onclick="responderFix(1, 2, 3, this)"><span class="letra">d</span><span>6⁴</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-1-2"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-1"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(0)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-1" disabled onclick="proximaSecao(1)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 3: REGRA DE SINAIS
+       ================================================= -->
+  <div class="secao" id="secao-2">
+    <h2>🎯 Seção 3 — Regra de Sinais (a mais importante!)</h2>
+
+    <p>Quando a base é <b>negativa</b>, o sinal do resultado depende do <b>expoente</b>. Isso é a parte que MAIS cai na prova!</p>
+
+    <h3>🔍 Por que isso acontece?</h3>
+    <p>Lembre-se: na multiplicação, sinais iguais dão positivo e sinais diferentes dão negativo. Quando você multiplica vários números negativos:</p>
+
+    <div class="exemplo">
+      <div class="exemplo-titulo">Veja com base −4:</div>
+      (−4)¹ = −4<br>
+      (−4)² = (−4)·(−4) = +16 &nbsp;&nbsp;<i>(2 negativos: par → +)</i><br>
+      (−4)³ = +16·(−4) = −64 &nbsp;&nbsp;<i>(3 negativos: ímpar → −)</i><br>
+      (−4)⁴ = (−64)·(−4) = +256 &nbsp;&nbsp;<i>(4 negativos: par → +)</i><br>
+      (−4)⁵ = +256·(−4) = −1024 &nbsp;&nbsp;<i>(5 negativos: ímpar → −)</i>
+    </div>
+
+    <div class="alerta">
+      <div class="alerta-titulo">⚔️ REGRA DE OURO — DECORE!</div>
+      Quando a base é <b>NEGATIVA</b>:<br>
+      • Expoente <b>PAR</b> → resultado <b>POSITIVO</b> ➕<br>
+      • Expoente <b>ÍMPAR</b> → resultado <b>NEGATIVO</b> ➖<br><br>
+      Quando a base é <b>POSITIVA</b> → resultado <b>sempre positivo</b>.
+    </div>
+
+    <h3>⚠️ Cuidado com a armadilha clássica!</h3>
+    <p><b>Não é a mesma coisa</b> ter parênteses ou não:</p>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Diferença crucial:</div>
+      <b>(−5)²</b> = (−5)·(−5) = <b>+25</b> &nbsp;<i>(o sinal entra na base)</i><br>
+      <b>−5²</b> = −(5·5) = <b>−25</b> &nbsp;<i>(só o 5 está elevado, o sinal fica fora)</i>
+    </div>
+
+    <!-- FIXAÇÃO 3 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">A regra de sinais é a base de tudo — pratique bastante!</div>
+      <div class="fixacao-progresso" id="fix-prog-2">Acertos: 0/4</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">O valor de <b>(−2)⁴</b> é:</div>
+        <div class="alternativas-fix" data-fix="2-0">
+          <button class="alt-fix" onclick="responderFix(2, 0, 0, this)"><span class="letra">a</span><span>−16</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 0, 1, this)"><span class="letra">b</span><span>+16</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 0, 2, this)"><span class="letra">c</span><span>−8</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 0, 3, this)"><span class="letra">d</span><span>+8</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-2-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">O valor de <b>(−3)³</b> é:</div>
+        <div class="alternativas-fix" data-fix="2-1">
+          <button class="alt-fix" onclick="responderFix(2, 1, 0, this)"><span class="letra">a</span><span>+27</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 1, 1, this)"><span class="letra">b</span><span>−27</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 1, 2, this)"><span class="letra">c</span><span>+9</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 1, 3, this)"><span class="letra">d</span><span>−9</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-2-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3</div>
+        <div class="exercicio-pergunta">O valor de <b>(−1)¹⁰⁰</b> é:</div>
+        <div class="alternativas-fix" data-fix="2-2">
+          <button class="alt-fix" onclick="responderFix(2, 2, 0, this)"><span class="letra">a</span><span>−100</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 2, 1, this)"><span class="letra">b</span><span>+100</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 2, 2, this)"><span class="letra">c</span><span>−1</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 2, 3, this)"><span class="letra">d</span><span>+1</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-2-2"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 4 (atenção à armadilha!)</div>
+        <div class="exercicio-pergunta">Qual destas afirmações está <b>CORRETA</b>?</div>
+        <div class="alternativas-fix" data-fix="2-3" style="grid-template-columns: 1fr;">
+          <button class="alt-fix" onclick="responderFix(2, 3, 0, this)"><span class="letra">a</span><span>(−4)² = −16 e −4² = −16</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 3, 1, this)"><span class="letra">b</span><span>(−4)² = +16 e −4² = +16</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 3, 2, this)"><span class="letra">c</span><span>(−4)² = +16 e −4² = −16</span></button>
+          <button class="alt-fix" onclick="responderFix(2, 3, 3, this)"><span class="letra">d</span><span>(−4)² = −16 e −4² = +16</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-2-3"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-2"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(1)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-2" disabled onclick="proximaSecao(2)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 4: EXPOENTE ZERO E UM
+       ================================================= -->
+  <div class="secao" id="secao-3">
+    <h2>📜 Seção 4 — Casos Especiais (Expoente 0 e 1)</h2>
+
+    <p>Existem dois casos super importantes que sempre caem na prova:</p>
+
+    <h3>🌟 Expoente zero</h3>
+    <div class="formula">a⁰ = 1 &nbsp;&nbsp; (qualquer base ≠ 0)</div>
+    <p>Exemplos: 5⁰ = 1 &nbsp;&nbsp; (−7)⁰ = 1 &nbsp;&nbsp; 100⁰ = 1 &nbsp;&nbsp; (−123)⁰ = 1</p>
+
+    <div class="post-it">Pense assim: 2³=8, 2²=4, 2¹=2, 2⁰=1. Cada vez que diminui o expoente, divide por 2. Por isso 2⁰ tem que dar 1!</div>
+
+    <h3>🌟 Expoente um</h3>
+    <div class="formula">a¹ = a &nbsp;&nbsp; (qualquer número)</div>
+    <p>Exemplos: 5¹ = 5 &nbsp;&nbsp; (−7)¹ = −7 &nbsp;&nbsp; 100¹ = 100</p>
+
+    <h3>🎁 Bônus: a base 1</h3>
+    <p>Toda potência com base 1 dá 1: <b>1ⁿ = 1</b> (qualquer expoente). Exemplos: 1⁵=1, 1¹⁰⁰=1, 1²⁰²⁵=1.</p>
+
+    <!-- FIXAÇÃO 4 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Casos especiais — pegue eles de surpresa na prova</div>
+      <div class="fixacao-progresso" id="fix-prog-3">Acertos: 0/2</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">O valor de <b>(−15)⁰ + 1²⁰⁰⁰ + 7¹</b> é:</div>
+        <div class="alternativas-fix" data-fix="3-0">
+          <button class="alt-fix" onclick="responderFix(3, 0, 0, this)"><span class="letra">a</span><span>9</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 0, 1, this)"><span class="letra">b</span><span>2007</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 0, 2, this)"><span class="letra">c</span><span>−7</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 0, 3, this)"><span class="letra">d</span><span>15</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-3-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">Qual destas afirmações é <b>FALSA</b>?</div>
+        <div class="alternativas-fix" data-fix="3-1" style="grid-template-columns: 1fr;">
+          <button class="alt-fix" onclick="responderFix(3, 1, 0, this)"><span class="letra">a</span><span>(−9)⁰ = 1</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 1, 1, this)"><span class="letra">b</span><span>50¹ = 50</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 1, 2, this)"><span class="letra">c</span><span>1²⁵ = 25</span></button>
+          <button class="alt-fix" onclick="responderFix(3, 1, 3, this)"><span class="letra">d</span><span>(−1)⁰ = 1</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-3-1"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-3"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(2)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-3" disabled onclick="proximaSecao(3)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 5: TRÊS PROPRIEDADES PRINCIPAIS
+       ================================================= -->
+  <div class="secao" id="secao-4">
+    <h2>🧩 Seção 5 — As 3 Propriedades Principais</h2>
+
+    <p>Estas 3 propriedades simplificam potências sem precisar fazer cálculo gigante. Decora elas e ganha tempo na prova!</p>
+
+    <h3>📜 1. Produto de potências de mesma base</h3>
+    <div class="formula">aᵐ · aⁿ = a<sup>m+n</sup> &nbsp; (mantém a base, SOMA expoentes)</div>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Exemplos:</div>
+      3⁴ · 3³ = 3<sup>4+3</sup> = <b>3⁷</b><br>
+      (−5)² · (−5)⁵ = (−5)<sup>2+5</sup> = <b>(−5)⁷</b><br>
+      2 · 2³ · 2⁴ = 2<sup>1+3+4</sup> = <b>2⁸</b> &nbsp;<i>(lembre: 2 = 2¹)</i>
+    </div>
+
+    <h3>📜 2. Quociente de potências de mesma base</h3>
+    <div class="formula">aᵐ : aⁿ = a<sup>m−n</sup> &nbsp; (mantém a base, SUBTRAI expoentes)</div>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Exemplos:</div>
+      5⁷ : 5⁵ = 5<sup>7−5</sup> = <b>5²</b><br>
+      (−7)⁹ : (−7)⁷ = <b>(−7)²</b><br>
+      12⁷⁸ : 12²⁴ = <b>12⁵⁴</b>
+    </div>
+
+    <h3>📜 3. Potência de potência</h3>
+    <div class="formula">(aᵐ)ⁿ = a<sup>m·n</sup> &nbsp; (mantém a base, MULTIPLICA expoentes)</div>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Exemplos:</div>
+      (2³)⁴ = 2<sup>3·4</sup> = <b>2¹²</b><br>
+      [(−10)⁶]⁴ = <b>(−10)<sup>24</sup></b><br>
+      (5²)⁷ = <b>5¹⁴</b>
+    </div>
+
+    <div class="alerta">
+      <div class="alerta-titulo">⚠️ ARMADILHA — onde MAIS se erra!</div>
+      <b>Não confunda:</b><br>
+      • <b>aᵐ · aⁿ = a<sup>m+n</sup></b> (produto: <b>SOMA</b>)<br>
+      • <b>(aᵐ)ⁿ = a<sup>m·n</sup></b> (potência de potência: <b>MULTIPLICA</b>)<br><br>
+      🎯 <b>Truque:</b> se tem PONTO entre potências → SOMA. Se tem POTÊNCIA elevando POTÊNCIA → MULTIPLICA.
+    </div>
+
+    <!-- FIXAÇÃO 5 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">As 3 propriedades — uma de cada e duas misturadas</div>
+      <div class="fixacao-progresso" id="fix-prog-4">Acertos: 0/5</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1 (produto)</div>
+        <div class="exercicio-pergunta">Simplificando <b>6⁴ · 6³</b> em uma única potência:</div>
+        <div class="alternativas-fix" data-fix="4-0">
+          <button class="alt-fix" onclick="responderFix(4, 0, 0, this)"><span class="letra">a</span><span>6⁷</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 0, 1, this)"><span class="letra">b</span><span>6¹²</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 0, 2, this)"><span class="letra">c</span><span>36⁷</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 0, 3, this)"><span class="letra">d</span><span>12⁷</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-4-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2 (quociente)</div>
+        <div class="exercicio-pergunta">Simplificando <b>10⁹ : 10⁵</b> em uma única potência:</div>
+        <div class="alternativas-fix" data-fix="4-1">
+          <button class="alt-fix" onclick="responderFix(4, 1, 0, this)"><span class="letra">a</span><span>10⁴⁵</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 1, 1, this)"><span class="letra">b</span><span>10¹⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 1, 2, this)"><span class="letra">c</span><span>10⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 1, 3, this)"><span class="letra">d</span><span>1⁴</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-4-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3 (potência de potência)</div>
+        <div class="exercicio-pergunta">Simplificando <b>(3²)⁵</b> em uma única potência:</div>
+        <div class="alternativas-fix" data-fix="4-2">
+          <button class="alt-fix" onclick="responderFix(4, 2, 0, this)"><span class="letra">a</span><span>3⁷</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 2, 1, this)"><span class="letra">b</span><span>3¹⁰</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 2, 2, this)"><span class="letra">c</span><span>9⁵</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 2, 3, this)"><span class="letra">d</span><span>3³</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-4-2"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 4 (cuidado: produto × pot. de pot.)</div>
+        <div class="exercicio-pergunta">Qual está <b>CORRETO</b>?</div>
+        <div class="alternativas-fix" data-fix="4-3" style="grid-template-columns: 1fr;">
+          <button class="alt-fix" onclick="responderFix(4, 3, 0, this)"><span class="letra">a</span><span>2³ · 2⁴ = 2¹² &nbsp;(multiplica)</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 3, 1, this)"><span class="letra">b</span><span>2³ · 2⁴ = 2⁷ &nbsp;(soma)</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 3, 2, this)"><span class="letra">c</span><span>(2³)⁴ = 2⁷ &nbsp;(soma)</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 3, 3, this)"><span class="letra">d</span><span>2³ · 2⁴ = 4⁷</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-4-3"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 5 (mistura)</div>
+        <div class="exercicio-pergunta">Simplificando <b>(2⁴)² · 2³</b> em uma única potência:</div>
+        <div class="alternativas-fix" data-fix="4-4">
+          <button class="alt-fix" onclick="responderFix(4, 4, 0, this)"><span class="letra">a</span><span>2⁹</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 4, 1, this)"><span class="letra">b</span><span>2¹¹</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 4, 2, this)"><span class="letra">c</span><span>2²⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(4, 4, 3, this)"><span class="letra">d</span><span>4⁸</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-4-4"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-4"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(3)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-4" disabled onclick="proximaSecao(4)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 6: NOTAÇÃO CIENTÍFICA
+       ================================================= -->
+  <div class="secao" id="secao-5">
+    <h2>🌌 Seção 6 — Notação Científica</h2>
+
+    <p>Para escrever números muito grandes (como distâncias entre planetas) de forma compacta, usamos potências de 10:</p>
+
+    <div class="formula">
+100 = 10²<br>
+1 000 = 10³<br>
+10 000 = 10⁴<br>
+1 000 000 = 10⁶<br>
+1 000 000 000 000 = 10¹²
+    </div>
+
+    <p>Repare: o <b>expoente do 10</b> é igual ao <b>número de zeros</b>!</p>
+
+    <h3>📐 Como passar para notação científica</h3>
+    <p><b>Regra:</b> coloque a vírgula depois do <b>primeiro algarismo significativo</b> e conte quantas casas ela "andou" para a esquerda.</p>
+
+    <div class="exemplo">
+      <div class="exemplo-titulo">Passo a passo: 2 000 000</div>
+      Primeiro algarismo significativo: 2.<br>
+      Vírgula entre o 2 e os zeros: 2,000000<br>
+      Casas que a vírgula andou: 6 (até o final)<br>
+      <b>Resultado: 2 · 10⁶</b><br><br>
+      Para 124 000:<br>
+      Vírgula entre 1 e 2 → <b>1,24 · 10⁵</b><br><br>
+      Para 40 000 000 000 000:<br>
+      <b>4 · 10¹³</b>
+    </div>
+
+    <div class="post-it">Para voltar da notação para o número: o expoente do 10 te diz quantas casas mover a vírgula para a direita. Ex.: 3 · 10⁴ = 30 000.</div>
+
+    <!-- FIXAÇÃO 6 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Pratique a conversão nos dois sentidos</div>
+      <div class="fixacao-progresso" id="fix-prog-5">Acertos: 0/3</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">O número <b>5 000 000</b> em notação científica é:</div>
+        <div class="alternativas-fix" data-fix="5-0">
+          <button class="alt-fix" onclick="responderFix(5, 0, 0, this)"><span class="letra">a</span><span>5 · 10⁵</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 0, 1, this)"><span class="letra">b</span><span>5 · 10⁶</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 0, 2, this)"><span class="letra">c</span><span>5 · 10⁷</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 0, 3, this)"><span class="letra">d</span><span>50 · 10⁵</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-5-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">O número <b>320 000</b> em notação científica é:</div>
+        <div class="alternativas-fix" data-fix="5-1">
+          <button class="alt-fix" onclick="responderFix(5, 1, 0, this)"><span class="letra">a</span><span>3,2 · 10⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 1, 1, this)"><span class="letra">b</span><span>3,2 · 10⁵</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 1, 2, this)"><span class="letra">c</span><span>32 · 10⁴</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 1, 3, this)"><span class="letra">d</span><span>320 · 10³</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-5-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3</div>
+        <div class="exercicio-pergunta">O número <b>7,5 · 10⁴</b> escrito por extenso é:</div>
+        <div class="alternativas-fix" data-fix="5-2">
+          <button class="alt-fix" onclick="responderFix(5, 2, 0, this)"><span class="letra">a</span><span>7 500</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 2, 1, this)"><span class="letra">b</span><span>75 000</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 2, 2, this)"><span class="letra">c</span><span>750 000</span></button>
+          <button class="alt-fix" onclick="responderFix(5, 2, 3, this)"><span class="letra">d</span><span>7 500 000</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-5-2"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-5"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(4)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-5" disabled onclick="proximaSecao(5)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 7: RAIZ QUADRADA
+       ================================================= -->
+  <div class="secao" id="secao-6">
+    <h2>√ Seção 7 — Raiz Quadrada</h2>
+
+    <p>A raiz quadrada é a operação <b>inversa</b> da potenciação ao quadrado:</p>
+
+    <div class="formula">
+Se 6² = 36, então √36 = 6<br>
+Se 9² = 81, então √81 = 9<br>
+Se 12² = 144, então √144 = 12
+    </div>
+
+    <p>√A pergunta: <b>"Que número, multiplicado por ele mesmo, dá A?"</b></p>
+
+    <h3>🎯 Forma 1 — Tentativa e erro (raízes pequenas)</h3>
+    <p>Para √64: testo 7² = 49 (pouco), 8² = 64 (achei!). Logo √64 = 8.</p>
+
+    <h3>🎯 Forma 2 — Decomposição em fatores primos (a mais usada!)</h3>
+
+    <div class="exemplo">
+      <div class="exemplo-titulo">Calcular √324 passo a passo:</div>
+      <b>1.</b> Decomponha 324 dividindo pelos primos (sempre o menor possível):<br>
+      324 ÷ 2 = 162<br>
+      162 ÷ 2 = 81<br>
+      81 ÷ 3 = 27<br>
+      27 ÷ 3 = 9<br>
+      9 ÷ 3 = 3<br>
+      3 ÷ 3 = 1<br><br>
+      <b>2.</b> Junte: 324 = 2² · 3⁴<br><br>
+      <b>3.</b> Para a raiz, divida cada expoente por 2:<br>
+      √324 = 2¹ · 3² = 2 · 9 = <b>18</b><br><br>
+      <b>4.</b> Confira: 18² = 324 ✓
+    </div>
+
+    <h3>🎯 Forma 3 — Aproximação (raízes não exatas)</h3>
+    <p>Nem todo número tem raiz inteira! Para √20:</p>
+    <div class="formula">
+4² = 16 (menos que 20)<br>
+5² = 25 (mais que 20)<br>
+Logo √20 está <b>entre 4 e 5</b>.
+    </div>
+
+    <div class="alerta">
+      <div class="alerta-titulo">⚠️ TRÊS REGRAS DE OURO</div>
+      • <b>Não existe</b> raiz quadrada de número negativo em ℤ (ex.: √−16 não existe)<br>
+      • <b>√0 = 0</b> e <b>√1 = 1</b> (casos especiais)<br>
+      • Se a raiz não é exata, ela está entre <b>dois inteiros consecutivos</b>
+    </div>
+
+    <h3>🔢 Quadrados perfeitos para decorar</h3>
+    <table>
+      <tr><th>n</th><th>n²</th><th>n</th><th>n²</th></tr>
+      <tr><td>1</td><td>1</td><td>11</td><td>121</td></tr>
+      <tr><td>2</td><td>4</td><td>12</td><td>144</td></tr>
+      <tr><td>3</td><td>9</td><td>13</td><td>169</td></tr>
+      <tr><td>4</td><td>16</td><td>14</td><td>196</td></tr>
+      <tr><td>5</td><td>25</td><td>15</td><td>225</td></tr>
+      <tr><td>6</td><td>36</td><td>16</td><td>256</td></tr>
+      <tr><td>7</td><td>49</td><td>17</td><td>289</td></tr>
+      <tr><td>8</td><td>64</td><td>18</td><td>324</td></tr>
+      <tr><td>9</td><td>81</td><td>19</td><td>361</td></tr>
+      <tr><td>10</td><td>100</td><td>20</td><td>400</td></tr>
+    </table>
+
+    <!-- FIXAÇÃO 7 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Raízes exatas, decomposição e aproximação</div>
+      <div class="fixacao-progresso" id="fix-prog-6">Acertos: 0/4</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1 (raiz exata)</div>
+        <div class="exercicio-pergunta">O valor de <b>√144</b> é:</div>
+        <div class="alternativas-fix" data-fix="6-0">
+          <button class="alt-fix" onclick="responderFix(6, 0, 0, this)"><span class="letra">a</span><span>10</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 0, 1, this)"><span class="letra">b</span><span>11</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 0, 2, this)"><span class="letra">c</span><span>12</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 0, 3, this)"><span class="letra">d</span><span>72</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-6-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2 (decomposição)</div>
+        <div class="exercicio-pergunta">Sabendo que <b>1 296 = 2⁴ · 3⁴</b>, qual é o valor de <b>√1 296</b>?</div>
+        <div class="alternativas-fix" data-fix="6-1">
+          <button class="alt-fix" onclick="responderFix(6, 1, 0, this)"><span class="letra">a</span><span>24</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 1, 1, this)"><span class="letra">b</span><span>36</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 1, 2, this)"><span class="letra">c</span><span>48</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 1, 3, this)"><span class="letra">d</span><span>108</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-6-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3 (aproximação)</div>
+        <div class="exercicio-pergunta">A raiz <b>√90</b> está entre os números inteiros:</div>
+        <div class="alternativas-fix" data-fix="6-2">
+          <button class="alt-fix" onclick="responderFix(6, 2, 0, this)"><span class="letra">a</span><span>8 e 9</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 2, 1, this)"><span class="letra">b</span><span>9 e 10</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 2, 2, this)"><span class="letra">c</span><span>10 e 11</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 2, 3, this)"><span class="letra">d</span><span>44 e 46</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-6-2"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 4 (regra de ouro)</div>
+        <div class="exercicio-pergunta">Qual destas afirmações é <b>FALSA</b>?</div>
+        <div class="alternativas-fix" data-fix="6-3" style="grid-template-columns: 1fr;">
+          <button class="alt-fix" onclick="responderFix(6, 3, 0, this)"><span class="letra">a</span><span>√0 = 0</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 3, 1, this)"><span class="letra">b</span><span>√1 = 1</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 3, 2, this)"><span class="letra">c</span><span>√−25 = −5 (em ℤ)</span></button>
+          <button class="alt-fix" onclick="responderFix(6, 3, 3, this)"><span class="letra">d</span><span>√100 = 10</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-6-3"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-6"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(5)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-6" disabled onclick="proximaSecao(6)">Próxima seção 🔒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+       SEÇÃO 8: EXPRESSÕES NUMÉRICAS
+       ================================================= -->
+  <div class="secao" id="secao-7">
+    <h2>📝 Seção 8 — Expressões Numéricas (juntando tudo!)</h2>
+
+    <p>Esta é a hora de juntar tudo o que aprendeu. Em uma expressão com várias operações, siga sempre <b>esta ordem rigorosa</b>:</p>
+
+    <div class="alerta">
+      <div class="alerta-titulo">🥇 ORDEM DE PRIORIDADE — DECORE!</div>
+      <b>1ª prioridade</b> — Sinais de agrupamento (de dentro pra fora):<br>
+      ( ) → [ ] → { }<br><br>
+      <b>2ª prioridade</b> — Dentro de cada agrupamento:<br>
+      1️⃣ <b>Potências e raízes</b><br>
+      2️⃣ <b>Multiplicações e divisões</b> (na ordem que aparecem)<br>
+      3️⃣ <b>Adições e subtrações</b> (na ordem que aparecem)
+    </div>
+
+    <h3>📘 Exemplo resolvido completo</h3>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Calcule: 8 : 2³ − (−7)² + (−12)²</div>
+      <b>Passo 1</b> — Resolver as potências:<br>
+      = 8 : 8 − 49 + 144<br><br>
+      <b>Passo 2</b> — Resolver a divisão:<br>
+      = 1 − 49 + 144<br><br>
+      <b>Passo 3</b> — Resolver soma e subtração (na ordem):<br>
+      = −48 + 144 = <b>96</b>
+    </div>
+
+    <h3>📘 Outro exemplo (com agrupamentos)</h3>
+    <div class="exemplo">
+      <div class="exemplo-titulo">Calcule: 3⁴ : 9 − 6² : 4 + 5²</div>
+      <b>Passo 1</b> — Potências:<br>
+      = 81 : 9 − 36 : 4 + 25<br><br>
+      <b>Passo 2</b> — Divisões (na ordem):<br>
+      = 9 − 9 + 25<br><br>
+      <b>Passo 3</b> — Soma e subtração:<br>
+      = 0 + 25 = <b>25</b>
+    </div>
+
+    <!-- FIXAÇÃO 8 -->
+    <div class="fixacao-box">
+      <div class="fixacao-titulo">🎯 Hora de Fixar!</div>
+      <div class="fixacao-subtitulo">Estas questões são iguais às que aparecem na prova</div>
+      <div class="fixacao-progresso" id="fix-prog-7">Acertos: 0/3</div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 1</div>
+        <div class="exercicio-pergunta">Calcule: <b>2³ + (−3)² − √49</b></div>
+        <div class="alternativas-fix" data-fix="7-0">
+          <button class="alt-fix" onclick="responderFix(7, 0, 0, this)"><span class="letra">a</span><span>4</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 0, 1, this)"><span class="letra">b</span><span>10</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 0, 2, this)"><span class="letra">c</span><span>24</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 0, 3, this)"><span class="letra">d</span><span>0</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-7-0"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 2</div>
+        <div class="exercicio-pergunta">Calcule: <b>(−2)⁴ : 2² + √81</b></div>
+        <div class="alternativas-fix" data-fix="7-1">
+          <button class="alt-fix" onclick="responderFix(7, 1, 0, this)"><span class="letra">a</span><span>5</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 1, 1, this)"><span class="letra">b</span><span>7</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 1, 2, this)"><span class="letra">c</span><span>13</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 1, 3, this)"><span class="letra">d</span><span>17</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-7-1"></div>
+      </div>
+
+      <div class="exercicio">
+        <div class="exercicio-num">Exercício 3 (mais difícil)</div>
+        <div class="exercicio-pergunta">Calcule: <b>5² − 3³ + (−1)¹⁰⁰ · √16</b></div>
+        <div class="alternativas-fix" data-fix="7-2">
+          <button class="alt-fix" onclick="responderFix(7, 2, 0, this)"><span class="letra">a</span><span>2</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 2, 1, this)"><span class="letra">b</span><span>−6</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 2, 2, this)"><span class="letra">c</span><span>6</span></button>
+          <button class="alt-fix" onclick="responderFix(7, 2, 3, this)"><span class="letra">d</span><span>−2</span></button>
+        </div>
+        <div class="feedback-fix" id="fb-7-2"></div>
+      </div>
+
+      <div class="resultado-fix" id="res-7"></div>
+
+      <div class="nav-secao">
+        <button class="btn-nav" onclick="navegar(6)">← Anterior</button>
+        <button class="btn-nav btn-proxima" id="btn-prox-7" disabled onclick="finalizarJornada()">Concluir Jornada! 🏆</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CELEBRAÇÃO FINAL -->
+  <div class="celebracao" id="celebracao" style="display: none;">
+    <h2 id="celeb-titulo">🏆 JORNADA CONCLUÍDA! 🏆</h2>
+    <div class="titulo-mago" id="celeb-mago">👑 Aprendiz das Potências</div>
+    <div style="color: #fff; font-size: 1.1em; margin: 15px 0;" id="celeb-pontos">Acertos totais: <b style="color: #ffd54f;">26 / 26</b></div>
+    <p style="color: #e1bee7; margin-bottom: 20px; font-style: italic;" id="celeb-msg">Você dominou TODOS os feitiços do Cap. 4! Agora está pronta para o duelo final na prova. ⚔️</p>
+
+    <div style="background: rgba(0,0,0,0.4); border-radius: 12px; padding: 18px; margin: 20px 0; text-align: left;">
+      <h3 style="color: #ba68c8; border-color: #ba68c8;">📋 Próximos passos sugeridos:</h3>
+      <ul class="checklist">
+        <li onclick="this.classList.toggle('marcado')">Revisar o <b>Resumo Interativo</b> (Pergaminho do Mago)</li>
+        <li onclick="this.classList.toggle('marcado')">Imprimir e estudar com o <b>Mapa Mental</b></li>
+        <li onclick="this.classList.toggle('marcado')">Fazer o <b>Simulado Interativo</b> (20 questões)</li>
+        <li onclick="this.classList.toggle('marcado')">Na véspera: olhar só os macetes do resumo</li>
+      </ul>
+    </div>
+
+    <div class="narr-box" style="text-align: center; margin: 20px 0;">
+    🔮 Boa prova, jovem aprendiz! Que cada feitiço de potenciação saia certeiro e que nenhuma expressão numérica te surpreenda. ⚔️✨
+    </div>
+
+    <button class="btn-nav btn-tentar" onclick="reiniciarTudo()">🔄 Refazer toda a jornada</button>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">💾 Salvo!</div>
+
+<script>
+const TOTAL_SECOES = 8;
+const exercicios = {
+  // Seção 1: A Lenda
+  '0-0': { correta: 1, exp: 'A 6ª casa = 2⁵ = 32 grãos. Cada casa dobra: 1, 2, 4, 8, 16, <b>32</b>...' },
+  '0-1': { correta: 2, exp: '2⁵ = 2·2·2·2·2 = <b>32</b>. Cuidado para não confundir com 2·5 = 10!' },
+  // Seção 2: Anatomia
+  '1-0': { correta: 1, exp: 'Em 7³, a base é o <b>7</b> (o número que será multiplicado). O 3 é o expoente.' },
+  '1-1': { correta: 2, exp: '5³ = 5·5·5 = <b>125</b>. Cuidado: não é 5·3=15!' },
+  '1-2': { correta: 2, exp: 'O 4 aparece <b>6 vezes</b> na multiplicação, então é 4⁶.' },
+  // Seção 3: Sinais
+  '2-0': { correta: 1, exp: 'Base negativa + expoente <b>par (4)</b> → resultado positivo. (−2)⁴ = +16.' },
+  '2-1': { correta: 1, exp: 'Base negativa + expoente <b>ímpar (3)</b> → resultado negativo. (−3)³ = −27.' },
+  '2-2': { correta: 3, exp: '100 é par → (−1)¹⁰⁰ = <b>+1</b>. Lembre: (−1)<sup>par</sup> = +1 sempre.' },
+  '2-3': { correta: 2, exp: '<b>(−4)²</b> = (−4)·(−4) = +16 (sinal entra na base). Já <b>−4²</b> = −(4·4) = −16 (só o 4 está elevado).' },
+  // Seção 4: Expoente 0 e 1
+  '3-0': { correta: 0, exp: '(−15)⁰ = 1, &nbsp; 1²⁰⁰⁰ = 1, &nbsp; 7¹ = 7. Total: 1 + 1 + 7 = <b>9</b>.' },
+  '3-1': { correta: 2, exp: '<b>1²⁵ = 1</b>, não 25! Toda potência com base 1 é igual a 1, qualquer expoente.' },
+  // Seção 5: Propriedades
+  '4-0': { correta: 0, exp: 'Produto de mesma base → <b>SOMA</b> expoentes. 6⁴·6³ = 6<sup>4+3</sup> = <b>6⁷</b>.' },
+  '4-1': { correta: 2, exp: 'Quociente de mesma base → <b>SUBTRAI</b> expoentes. 10⁹:10⁵ = 10<sup>9-5</sup> = <b>10⁴</b>.' },
+  '4-2': { correta: 1, exp: 'Potência de potência → <b>MULTIPLICA</b> expoentes. (3²)⁵ = 3<sup>2·5</sup> = <b>3¹⁰</b>.' },
+  '4-3': { correta: 1, exp: 'Em <b>2³ · 2⁴</b> tem PONTO entre as potências → SOMA: 2⁷. Não confunda com (2³)⁴ que é potência de potência (multiplica).' },
+  '4-4': { correta: 1, exp: '(2⁴)² = 2⁸ (multiplica), depois 2⁸ · 2³ = 2¹¹ (soma). Resultado: <b>2¹¹</b>.' },
+  // Seção 6: Notação Científica
+  '5-0': { correta: 1, exp: '5 000 000 tem 6 zeros depois do 5. A vírgula anda 6 casas → <b>5 · 10⁶</b>.' },
+  '5-1': { correta: 1, exp: 'Vírgula entre 3 e 2: 3,2. Conta as casas até o final: 3,20000 = 5 casas → <b>3,2 · 10⁵</b>.' },
+  '5-2': { correta: 1, exp: '7,5 · 10⁴ → move a vírgula 4 casas para a direita → <b>75 000</b>.' },
+  // Seção 7: Raiz Quadrada
+  '6-0': { correta: 2, exp: '√144 = <b>12</b>, pois 12² = 144. Decomposição: 144 = 2⁴ · 3², então √144 = 2² · 3 = 12.' },
+  '6-1': { correta: 1, exp: 'Para a raiz, divide cada expoente por 2: √(2⁴·3⁴) = 2² · 3² = 4 · 9 = <b>36</b>.' },
+  '6-2': { correta: 1, exp: '9² = 81 (menos que 90) e 10² = 100 (mais que 90). Logo √90 está entre <b>9 e 10</b>.' },
+  '6-3': { correta: 2, exp: '<b>Não existe</b> raiz quadrada de número negativo em ℤ. As outras alternativas estão corretas.' },
+  // Seção 8: Expressões
+  '7-0': { correta: 1, exp: 'Primeiro potências e raiz: 2³=8, (−3)²=9, √49=7. Depois: 8 + 9 − 7 = <b>10</b>.' },
+  '7-1': { correta: 2, exp: 'Potências/raiz: (−2)⁴=16, 2²=4, √81=9. Divisão: 16:4=4. Soma: 4 + 9 = <b>13</b>.' },
+  '7-2': { correta: 0, exp: 'Potências: 5²=25, 3³=27, (−1)¹⁰⁰=+1, √16=4. Multi: 1·4=4. Resultado: 25 − 27 + 4 = <b>2</b>.' },
+};
+
+const totaisPorSecao = [2, 3, 4, 2, 5, 3, 4, 3];
+const acertosPorSecao = [0, 0, 0, 0, 0, 0, 0, 0];
+const respondidasPorSecao = [0, 0, 0, 0, 0, 0, 0, 0];
+const respostasDadas = {}; // chave: 'sec-ex'
+
+function responderFix(secao, ex, alt, btn) {
+  const chave = `${secao}-${ex}`;
+  if (respostasDadas[chave] !== undefined) return; // já respondeu
+
+  const ex_data = exercicios[chave];
+  const correto = (alt === ex_data.correta);
+  respostasDadas[chave] = alt;
+  respondidasPorSecao[secao]++;
+  if (correto) acertosPorSecao[secao]++;
+
+  // Marcar visualmente
+  const altsContainer = document.querySelector(`[data-fix="${chave}"]`);
+  altsContainer.querySelectorAll('.alt-fix').forEach((b, j) => {
+    b.disabled = true;
+    if (j === ex_data.correta) b.classList.add('correta');
+    else if (j === alt) b.classList.add('errada');
+    else b.classList.add('desativada');
+  });
+
+  // Feedback
+  const fb = document.getElementById(`fb-${chave}`);
+  if (correto) {
+    fb.className = 'feedback-fix acerto';
+    fb.innerHTML = `<div class="titulo-fb">✅ Correto!</div>${ex_data.exp}`;
+  } else {
+    fb.className = 'feedback-fix erro';
+    fb.innerHTML = `<div class="titulo-fb">❌ Não foi dessa vez.</div>${ex_data.exp}`;
+  }
+
+  atualizarProgresso(secao);
+}
+
+function atualizarProgresso(secao) {
+  const total = totaisPorSecao[secao];
+  const acertos = acertosPorSecao[secao];
+  const respondidas = respondidasPorSecao[secao];
+
+  document.getElementById(`fix-prog-${secao}`).textContent = `Acertos: ${acertos}/${total}`;
+
+  // Atualiza progresso geral
+  const acertosTotaisCount = acertosPorSecao.reduce((a, b) => a + b, 0);
+  const totalGeral = totaisPorSecao.reduce((a, b) => a + b, 0);
+  document.getElementById('acertos-totais').textContent = acertosTotaisCount;
+  const pct = (acertosTotaisCount / totalGeral) * 100;
+  document.getElementById('progresso-fill').style.width = pct + '%';
+
+  // Verifica se concluiu a seção
+  if (respondidas === total) {
+    avaliarSecao(secao);
+  }
+}
+
+function avaliarSecao(secao) {
+  const total = totaisPorSecao[secao];
+  const acertos = acertosPorSecao[secao];
+  const minimo = Math.ceil(total * 0.7); // 70% mínimo
+  const liberou = acertos >= minimo;
+
+  const resBox = document.getElementById(`res-${secao}`);
+  resBox.classList.add('visivel');
+
+  if (liberou) {
+    resBox.innerHTML = `
+      <div class="pontuacao-fix">${acertos} / ${total} acertos ✅</div>
+      <div class="mensagem-fix">🎉 <b>Excelente, jovem aprendiz!</b> Você dominou esta seção. Próxima parte liberada!</div>
+    `;
+    document.getElementById(`btn-prox-${secao}`).disabled = false;
+    document.getElementById(`btn-prox-${secao}`).innerHTML = secao === 7
+      ? 'Concluir Jornada! 🏆'
+      : 'Próxima seção ✓';
+  } else {
+    resBox.innerHTML = `
+      <div class="pontuacao-fix">${acertos} / ${total} acertos ⚠️</div>
+      <div class="mensagem-fix bloqueado">Você precisa de pelo menos <b>${minimo} acertos</b> para avançar. Releia o conteúdo desta seção e clique abaixo para tentar novamente.</div>
+      <button class="btn-nav btn-tentar" onclick="reiniciarSecao(${secao})" style="margin-top: 10px; max-width: 300px;">🔄 Refazer exercícios desta seção</button>
+    `;
+  }
+}
+
+function reiniciarSecao(secao) {
+  // Limpa respostas da seção
+  for (let i = 0; i < totaisPorSecao[secao]; i++) {
+    const chave = `${secao}-${i}`;
+    delete respostasDadas[chave];
+    const altsContainer = document.querySelector(`[data-fix="${chave}"]`);
+    altsContainer.querySelectorAll('.alt-fix').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('correta', 'errada', 'desativada');
+    });
+    document.getElementById(`fb-${chave}`).className = 'feedback-fix';
+    document.getElementById(`fb-${chave}`).innerHTML = '';
+  }
+  acertosPorSecao[secao] = 0;
+  respondidasPorSecao[secao] = 0;
+  document.getElementById(`fix-prog-${secao}`).textContent = `Acertos: 0/${totaisPorSecao[secao]}`;
+  document.getElementById(`res-${secao}`).classList.remove('visivel');
+  document.getElementById(`res-${secao}`).innerHTML = '';
+
+  // Recalcula progresso geral
+  const acertosTotaisCount = acertosPorSecao.reduce((a, b) => a + b, 0);
+  const totalGeral = totaisPorSecao.reduce((a, b) => a + b, 0);
+  document.getElementById('acertos-totais').textContent = acertosTotaisCount;
+  document.getElementById('progresso-fill').style.width = (acertosTotaisCount / totalGeral) * 100 + '%';
+}
+
+function navegar(secao) {
+  // Só permite navegar para seções já desbloqueadas
+  const item = document.querySelector(`.mapa-item[data-secao="${secao}"]`);
+  if (!item.classList.contains('disponivel')) return;
+
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  document.querySelectorAll('.mapa-item').forEach(m => m.classList.remove('atual'));
+  document.getElementById(`secao-${secao}`).classList.add('ativa');
+  item.classList.add('atual');
+  document.getElementById('secao-atual').textContent = secao + 1;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function proximaSecao(secaoAtual) {
+  const proxima = secaoAtual + 1;
+  if (proxima >= TOTAL_SECOES) return;
+
+  // Marcar atual como concluída
+  const itemAtual = document.querySelector(`.mapa-item[data-secao="${secaoAtual}"]`);
+  itemAtual.classList.add('concluida');
+
+  // Liberar próxima
+  const itemProxima = document.querySelector(`.mapa-item[data-secao="${proxima}"]`);
+  itemProxima.classList.add('disponivel');
+
+  navegar(proxima);
+}
+
+function finalizarJornada() {
+  // Marcar última seção como concluída
+  document.querySelector(`.mapa-item[data-secao="7"]`).classList.add('concluida');
+
+  const acertosTotaisCount = acertosPorSecao.reduce((a, b) => a + b, 0);
+  const totalGeral = totaisPorSecao.reduce((a, b) => a + b, 0);
+  const pct = (acertosTotaisCount / totalGeral) * 100;
+
+  let titulo, mago, msg;
+  if (pct === 100) {
+    titulo = '🏆 PERFEIÇÃO TOTAL! 🏆';
+    mago = '👑 Arquimago Supremo de ℤ';
+    msg = 'Acertou TUDO! Você dominou completamente o conteúdo. Está mais que pronta para a prova! ⚔️✨';
+  } else if (pct >= 90) {
+    titulo = '🌟 EXCELENTE JORNADA! 🌟';
+    mago = '✨ Aprendiz das Potências';
+    msg = `Acertou ${acertosTotaisCount} de ${totalGeral} (${Math.round(pct)}%)! Excelente desempenho. Pode encarar a prova com confiança!`;
+  } else if (pct >= 75) {
+    titulo = '⚔️ Boa Jornada!';
+    mago = '⭐ Mestre dos Feitiços';
+    msg = `Acertou ${acertosTotaisCount} de ${totalGeral} (${Math.round(pct)}%). Bom domínio! Reveja os pontos onde errou para chegar na prova ainda mais segura.`;
+  } else {
+    titulo = '📚 Jornada Completa, mas...';
+    mago = '🌱 Aprendiz em Treinamento';
+    msg = `Acertou ${acertosTotaisCount} de ${totalGeral} (${Math.round(pct)}%). Vale a pena refazer as seções onde teve mais dificuldade antes da prova!`;
+  }
+
+  document.getElementById('celeb-titulo').textContent = titulo;
+  document.getElementById('celeb-mago').textContent = mago;
+  document.getElementById('celeb-pontos').innerHTML = `Acertos totais: <b style="color: #ffd54f;">${acertosTotaisCount} / ${totalGeral}</b>`;
+  document.getElementById('celeb-msg').textContent = msg;
+
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  document.getElementById('celebracao').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function reiniciarTudo() {
+  if (!confirm('Refazer toda a jornada do zero? Todo progresso será apagado.')) return;
+  localStorage.removeItem(CHAVE_STORAGE);
+  window.location.reload();
+}
+
+// =================================================
+// SISTEMA DE PERSISTÊNCIA (salva progresso no navegador)
+// =================================================
+const CHAVE_STORAGE = 'kit_estudos_cap4_v1';
+
+function salvarProgresso() {
+  try {
+    // Coleta estado completo
+    const secoesDesbloqueadas = [];
+    const secoesConcluidas = [];
+    document.querySelectorAll('.mapa-item').forEach((item, i) => {
+      if (item.classList.contains('disponivel')) secoesDesbloqueadas.push(i);
+      if (item.classList.contains('concluida')) secoesConcluidas.push(i);
+    });
+
+    // Seção atual
+    let secaoAtual = 0;
+    document.querySelectorAll('.secao').forEach((s, i) => {
+      if (s.classList.contains('ativa')) secaoAtual = i;
+    });
+
+    // Estado geral concluído (celebração visível)
+    const celebracaoVisivel = document.getElementById('celebracao').style.display === 'block';
+
+    const estado = {
+      respostasDadas,
+      acertosPorSecao,
+      respondidasPorSecao,
+      secoesDesbloqueadas,
+      secoesConcluidas,
+      secaoAtual,
+      celebracaoVisivel,
+      dataSalvamento: new Date().toISOString()
+    };
+
+    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(estado));
+    atualizarRotuloUltimoSalvar(estado.dataSalvamento);
+  } catch (e) {
+    console.error('Erro ao salvar:', e);
+  }
+}
+
+function carregarProgresso() {
+  try {
+    const dado = localStorage.getItem(CHAVE_STORAGE);
+    if (!dado) return false;
+    const estado = JSON.parse(dado);
+
+    // Restaura respostas e contadores
+    Object.keys(estado.respostasDadas).forEach(chave => {
+      respostasDadas[chave] = estado.respostasDadas[chave];
+    });
+    for (let i = 0; i < 8; i++) {
+      acertosPorSecao[i] = estado.acertosPorSecao[i] || 0;
+      respondidasPorSecao[i] = estado.respondidasPorSecao[i] || 0;
+    }
+
+    // Restaura visualmente cada exercício respondido
+    Object.keys(estado.respostasDadas).forEach(chave => {
+      const ex_data = exercicios[chave];
+      if (!ex_data) return;
+      const altSelecionada = estado.respostasDadas[chave];
+      const altsContainer = document.querySelector(`[data-fix="${chave}"]`);
+      if (!altsContainer) return;
+
+      altsContainer.querySelectorAll('.alt-fix').forEach((b, j) => {
+        b.disabled = true;
+        if (j === ex_data.correta) b.classList.add('correta');
+        else if (j === altSelecionada) b.classList.add('errada');
+        else b.classList.add('desativada');
+      });
+
+      const correto = (altSelecionada === ex_data.correta);
+      const fb = document.getElementById(`fb-${chave}`);
+      if (correto) {
+        fb.className = 'feedback-fix acerto';
+        fb.innerHTML = `<div class="titulo-fb">✅ Correto!</div>${ex_data.exp}`;
+      } else {
+        fb.className = 'feedback-fix erro';
+        fb.innerHTML = `<div class="titulo-fb">❌ Não foi dessa vez.</div>${ex_data.exp}`;
+      }
+    });
+
+    // Restaura status visual das seções (desbloqueadas/concluídas)
+    if (estado.secoesDesbloqueadas) {
+      estado.secoesDesbloqueadas.forEach(i => {
+        const item = document.querySelector(`.mapa-item[data-secao="${i}"]`);
+        if (item) item.classList.add('disponivel');
+      });
+    }
+    if (estado.secoesConcluidas) {
+      estado.secoesConcluidas.forEach(i => {
+        const item = document.querySelector(`.mapa-item[data-secao="${i}"]`);
+        if (item) item.classList.add('concluida');
+      });
+    }
+
+    // Restaura resultado de cada seção (avaliação)
+    for (let secao = 0; secao < 8; secao++) {
+      if (respondidasPorSecao[secao] === totaisPorSecao[secao]) {
+        avaliarSecao(secao);
+      }
+    }
+
+    // Volta para a seção que estava
+    if (typeof estado.secaoAtual === 'number') {
+      navegar(estado.secaoAtual);
+    }
+
+    // Atualiza progresso geral
+    const acertosTotaisCount = acertosPorSecao.reduce((a, b) => a + b, 0);
+    const totalGeral = totaisPorSecao.reduce((a, b) => a + b, 0);
+    document.getElementById('acertos-totais').textContent = acertosTotaisCount;
+    document.getElementById('progresso-fill').style.width = (acertosTotaisCount / totalGeral) * 100 + '%';
+
+    // Se a celebração estava visível, restaura
+    if (estado.celebracaoVisivel) {
+      finalizarJornada();
+    }
+
+    atualizarRotuloUltimoSalvar(estado.dataSalvamento);
+    return true;
+  } catch (e) {
+    console.error('Erro ao carregar progresso:', e);
+    return false;
+  }
+}
+
+function atualizarRotuloUltimoSalvar(iso) {
+  if (!iso) {
+    document.getElementById('ultimo-salvar').textContent = '—';
+    return;
+  }
+  const d = new Date(iso);
+  const data = d.toLocaleDateString('pt-BR');
+  const hora = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('ultimo-salvar').textContent = `${data} às ${hora}`;
+}
+
+function mostrarToast(mensagem) {
+  const toast = document.getElementById('toast');
+  toast.textContent = mensagem;
+  toast.classList.add('visivel');
+  setTimeout(() => toast.classList.remove('visivel'), 2200);
+}
+
+function exportarProgresso() {
+  const dado = localStorage.getItem(CHAVE_STORAGE);
+  if (!dado) {
+    alert('Ainda não há progresso para exportar. Faça pelo menos um exercício primeiro.');
+    return;
+  }
+  const blob = new Blob([dado], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const data = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+  a.href = url;
+  a.download = `progresso_leitura_cap4_${data}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('📥 Progresso exportado!');
+}
+
+function importarProgresso(event) {
+  const arquivo = event.target.files[0];
+  if (!arquivo) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const conteudo = e.target.result;
+      JSON.parse(conteudo); // valida
+      if (confirm('Isso vai substituir o progresso atual pelo do arquivo. Continuar?')) {
+        localStorage.setItem(CHAVE_STORAGE, conteudo);
+        mostrarToast('📤 Progresso importado!');
+        setTimeout(() => window.location.reload(), 800);
+      }
+    } catch (err) {
+      alert('Arquivo inválido. Por favor, use um arquivo de progresso exportado anteriormente.');
+    }
+  };
+  reader.readAsText(arquivo);
+  event.target.value = ''; // limpa para permitir reimportar mesmo arquivo
+}
+
+function zerarProgresso() {
+  if (!confirm('Tem certeza? Todo o progresso salvo será apagado e a página vai recarregar do zero.')) return;
+  localStorage.removeItem(CHAVE_STORAGE);
+  mostrarToast('🗑️ Progresso apagado!');
+  setTimeout(() => window.location.reload(), 800);
+}
+
+// Sobrescreve responderFix para também salvar
+const _responderFixOriginal = responderFix;
+responderFix = function(secao, ex, alt, btn) {
+  _responderFixOriginal(secao, ex, alt, btn);
+  salvarProgresso();
+};
+
+// Sobrescreve proximaSecao para também salvar
+const _proximaSecaoOriginal = proximaSecao;
+proximaSecao = function(secaoAtual) {
+  _proximaSecaoOriginal(secaoAtual);
+  salvarProgresso();
+};
+
+// Sobrescreve reiniciarSecao para também salvar
+const _reiniciarSecaoOriginal = reiniciarSecao;
+reiniciarSecao = function(secao) {
+  _reiniciarSecaoOriginal(secao);
+  salvarProgresso();
+};
+
+// Sobrescreve finalizarJornada para também salvar
+const _finalizarJornadaOriginal = finalizarJornada;
+finalizarJornada = function() {
+  _finalizarJornadaOriginal();
+  salvarProgresso();
+};
+
+// Sobrescreve navegar para também salvar (a seção atual)
+const _navegarOriginal = navegar;
+navegar = function(secao) {
+  _navegarOriginal(secao);
+  // Salva apenas se houver progresso prévio
+  if (localStorage.getItem(CHAVE_STORAGE)) {
+    salvarProgresso();
+  }
+};
+
+// Carrega progresso ao abrir a página
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(carregarProgresso, 100);
+});
+</script>
+
+</body>
+</html>

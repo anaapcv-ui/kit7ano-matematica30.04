@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📜 Resumo — Cap. 4 — Pergaminho do Aprendiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1a0033 0%, #0d001a 50%, #001a2e 100%);
+    color: #e8e8f0;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .capa {
+    background: linear-gradient(135deg, #4a148c 0%, #1a237e 50%, #006064 100%);
+    border: 3px solid #ba68c8;
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(186, 104, 200, 0.4);
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capa::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: stars 20s linear infinite;
+  }
+  @keyframes stars {
+    from { transform: translate(0,0); }
+    to { transform: translate(-30px,-30px); }
+  }
+  .capa h1 {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 0 0 15px #ba68c8;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .capa .sub { color: #e1bee7; font-size: 1em; position: relative; }
+
+  .grid-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 18px 20px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(186, 104, 200, 0.4);
+  }
+  .card h3 {
+    font-size: 1.15em;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid;
+  }
+
+  .card-1 { border-color: #ba68c8; }
+  .card-1 h3 { color: #ce93d8; border-color: #ba68c8; }
+  .card-2 { border-color: #4fc3f7; }
+  .card-2 h3 { color: #81d4fa; border-color: #4fc3f7; }
+  .card-3 { border-color: #66bb6a; }
+  .card-3 h3 { color: #a5d6a7; border-color: #66bb6a; }
+  .card-4 { border-color: #ffa726; }
+  .card-4 h3 { color: #ffcc80; border-color: #ffa726; }
+  .card-5 { border-color: #ec407a; }
+  .card-5 h3 { color: #f48fb1; border-color: #ec407a; }
+  .card-6 { border-color: #29b6f6; }
+  .card-6 h3 { color: #81d4fa; border-color: #29b6f6; }
+
+  .card p, .card li { color: #e8e8f0; font-size: 0.95em; margin-bottom: 4px; }
+  .card b { color: #ffd54f; }
+  .card ul, .card ol { margin-left: 18px; }
+
+  .formula-mini {
+    background: rgba(0,0,0,0.4);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #b3e5fc;
+    margin: 6px 0;
+    font-size: 0.95em;
+    border-left: 3px solid #4fc3f7;
+  }
+
+  .ex-mini {
+    background: rgba(46, 125, 50, 0.15);
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin: 4px 0;
+    font-size: 0.9em;
+    color: #c8e6c9;
+    border-left: 2px solid #66bb6a;
+  }
+
+  .alerta-mini {
+    background: rgba(183, 28, 28, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-size: 0.9em;
+    color: #ffcdd2;
+    border-left: 3px solid #ef5350;
+  }
+
+  .destaque-amarelo {
+    background: rgba(249, 168, 37, 0.25);
+    padding: 6px 10px;
+    border-radius: 5px;
+    margin: 6px 0;
+    color: #fff9c4;
+    font-weight: 700;
+    border-left: 3px solid #ffd54f;
+    font-size: 0.95em;
+  }
+
+  /* TABELAS */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.9em;
+  }
+  th, td {
+    border: 1px solid rgba(186, 104, 200, 0.3);
+    padding: 5px 8px;
+    text-align: center;
+  }
+  th { background: rgba(186, 104, 200, 0.25); color: #f3e5f5; font-weight: 700; }
+  td { color: #e8e8f0; }
+  .pos { color: #aed581; font-weight: 900; }
+  .neg { color: #ef9a9a; font-weight: 900; }
+
+  /* QUIZ RELÂMPAGO */
+  .quiz-rapido {
+    background: linear-gradient(135deg, rgba(74, 20, 140, 0.5), rgba(13, 71, 161, 0.5));
+    border: 2.5px solid #ba68c8;
+    border-radius: 15px;
+    padding: 22px;
+    margin-top: 25px;
+  }
+  .quiz-rapido h2 {
+    color: #ba68c8;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.4em;
+    text-shadow: 0 0 10px rgba(186, 104, 200, 0.5);
+  }
+  .pergunta {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-left: 3px solid #4fc3f7;
+  }
+  .pergunta .pergunta-titulo {
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .pergunta .resposta {
+    background: rgba(46, 125, 50, 0.3);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-top: 6px;
+    color: #c8e6c9;
+    border-left: 3px solid #66bb6a;
+    display: none;
+    animation: fadeIn 0.4s;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .pergunta.aberta .resposta { display: block; }
+  .btn-revelar {
+    background: #ba68c8;
+    color: #1a0033;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85em;
+    margin-top: 5px;
+  }
+  .btn-revelar:hover {
+    background: #ce93d8;
+  }
+
+  sup { font-size: 75%; vertical-align: super; line-height: 0; }
+
+  .selo-bottom {
+    text-align: center;
+    margin-top: 25px;
+    padding: 15px;
+    color: #ba68c8;
+    font-style: italic;
+    font-size: 0.95em;
+    border-top: 1px dashed #ba68c8;
+  }
+
+  .indice-rapido {
+    background: rgba(26, 35, 126, 0.4);
+    border: 2px solid #5c6bc0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+  .indice-rapido span {
+    color: #9fa8da;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+  .indice-rapido a {
+    background: rgba(124, 77, 255, 0.2);
+    color: #b39ddb;
+    padding: 5px 12px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-size: 0.85em;
+    border: 1px solid #7c4dff;
+    transition: all 0.3s;
+  }
+  .indice-rapido a:hover {
+    background: #7c4dff;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- CAPA -->
+  <div class="capa">
+    <h1>📜 Pergaminho do Aprendiz</h1>
+    <div class="sub">Resumo Express — Cap. 4: Potenciação e Raiz Quadrada • 7º ano</div>
+  </div>
+
+  <!-- ÍNDICE -->
+  <div class="indice-rapido">
+    <span>🗺️ Pular para:</span>
+    <a href="#potenciacao">Potenciação</a>
+    <a href="#sinais">Regra de Sinais</a>
+    <a href="#propriedades">Propriedades</a>
+    <a href="#notacao">Notação Científica</a>
+    <a href="#raiz">Raiz Quadrada</a>
+    <a href="#expressoes">Expressões</a>
+    <a href="#quiz">Quiz Relâmpago</a>
+  </div>
+
+  <!-- GRID DE CARDS -->
+  <div class="grid-resumo">
+
+    <!-- CARD 1: POTENCIAÇÃO -->
+    <div class="card card-1" id="potenciacao">
+      <h3>⚡ 1. Potenciação — O Feitiço</h3>
+      <p>Multiplicação de fatores iguais.</p>
+      <div class="formula-mini">3⁵ = 3·3·3·3·3 = 243</div>
+      <ul>
+        <li><b>Base</b> = 3 (o número repetido)</li>
+        <li><b>Expoente</b> = 5 (quantas vezes)</li>
+        <li><b>Potência</b> = 243 (resultado)</li>
+      </ul>
+      <div class="destaque-amarelo">📖 Lê-se: "três elevado à quinta"</div>
+    </div>
+
+    <!-- CARD 2: REGRA DE SINAIS -->
+    <div class="card card-2" id="sinais">
+      <h3>🎯 2. Regra do Sinal</h3>
+      <table>
+        <tr><th>Base</th><th>Expoente</th><th>Resultado</th></tr>
+        <tr><td>+</td><td>qualquer</td><td class="pos">+</td></tr>
+        <tr><td>−</td><td>PAR</td><td class="pos">+</td></tr>
+        <tr><td>−</td><td>ÍMPAR</td><td class="neg">−</td></tr>
+      </table>
+      <div class="ex-mini">(−2)⁴ = +16 &nbsp;&nbsp; (par → +)</div>
+      <div class="ex-mini">(−2)⁵ = −32 &nbsp;&nbsp; (ímpar → −)</div>
+      <div class="ex-mini">(−1)⁹⁹ = −1 &nbsp;&nbsp; (99 é ímpar)</div>
+    </div>
+
+    <!-- CARD 3: PROPRIEDADES -->
+    <div class="card card-3" id="propriedades">
+      <h3>🧩 3. As 4 Propriedades</h3>
+      <p><b>📜 Expoente zero:</b></p>
+      <div class="formula-mini">a⁰ = 1 &nbsp; (a≠0)</div>
+
+      <p><b>📜 Produto, mesma base — SOMA:</b></p>
+      <div class="formula-mini">aᵐ · aⁿ = a<sup>m+n</sup></div>
+      <div class="ex-mini">3⁴·3³ = 3⁷</div>
+
+      <p><b>📜 Quociente, mesma base — SUBTRAI:</b></p>
+      <div class="formula-mini">aᵐ : aⁿ = a<sup>m−n</sup></div>
+      <div class="ex-mini">5⁷:5⁵ = 5²</div>
+
+      <p><b>📜 Potência de potência — MULTIPLICA:</b></p>
+      <div class="formula-mini">(aᵐ)ⁿ = a<sup>m·n</sup></div>
+      <div class="ex-mini">(2³)⁴ = 2¹²</div>
+    </div>
+
+    <!-- CARD 4: ARMADILHAS -->
+    <div class="card card-4">
+      <h3>⚠️ 4. Armadilhas Frequentes</h3>
+      <div class="alerta-mini">
+        <b>Não confunda!</b><br>
+        • aᵐ·aⁿ → <b>SOMA</b> expoentes<br>
+        • (aᵐ)ⁿ → <b>MULTIPLICA</b> expoentes
+      </div>
+      <div class="alerta-mini">
+        <b>−6⁴ ≠ (−6)⁴</b><br>
+        • −6⁴ = −1296 (sem parênteses, o sinal não entra)<br>
+        • (−6)⁴ = +1296 (com parênteses, o − faz parte da base)
+      </div>
+      <div class="alerta-mini">
+        <b>a⁰ = 1</b> (qualquer base ≠ 0), inclusive (−7)⁰ = 1
+      </div>
+    </div>
+
+    <!-- CARD 5: NOTAÇÃO CIENTÍFICA -->
+    <div class="card card-5" id="notacao">
+      <h3>🌌 5. Notação Científica</h3>
+      <p>Forma compacta para números muito grandes.</p>
+      <div class="formula-mini">Forma: a · 10ⁿ</div>
+      <table>
+        <tr><th>Número</th><th>Notação</th></tr>
+        <tr><td>100</td><td>10²</td></tr>
+        <tr><td>1 000 000</td><td>10⁶</td></tr>
+        <tr><td>3 000 000</td><td>3·10⁶</td></tr>
+        <tr><td>124 000</td><td>1,24·10⁵</td></tr>
+        <tr><td>40 000 000 000 000</td><td>4·10¹³</td></tr>
+      </table>
+      <div class="destaque-amarelo">💡 O expoente do 10 = nº de casas que a vírgula andou.</div>
+    </div>
+
+    <!-- CARD 6: RAIZ QUADRADA -->
+    <div class="card card-6" id="raiz">
+      <h3>√ 6. Raiz Quadrada</h3>
+      <p>Operação <b>inversa</b> da potência ao quadrado.</p>
+      <div class="formula-mini">√36 = 6, pois 6² = 36</div>
+
+      <p><b>🎯 Como calcular?</b></p>
+      <ol>
+        <li>Tentativa e erro</li>
+        <li><b>Decomposição em fatores primos</b></li>
+        <li>Aproximação (não exatas)</li>
+      </ol>
+
+      <p><b>📐 Exemplo (decomposição):</b></p>
+      <div class="ex-mini">
+        √324 = √(2²·3⁴)<br>
+        = 2 · 3² = 2·9 = <b>18</b>
+      </div>
+
+      <div class="alerta-mini">
+        <b>⚠️ Regras de ouro:</b><br>
+        • √0 = 0 e √1 = 1<br>
+        • Não existe √ de negativo em ℤ<br>
+        • √7 está entre 2 e 3 (pois 2²=4 e 3²=9)
+      </div>
+    </div>
+
+    <!-- CARD 7: QUADRADOS PERFEITOS -->
+    <div class="card card-1">
+      <h3>🎲 7. Quadrados Perfeitos (decore!)</h3>
+      <p>Saber estes de cor agiliza muito a prova:</p>
+      <table>
+        <tr><th>n</th><th>n²</th><th>n</th><th>n²</th></tr>
+        <tr><td>1</td><td>1</td><td>11</td><td>121</td></tr>
+        <tr><td>2</td><td>4</td><td>12</td><td>144</td></tr>
+        <tr><td>3</td><td>9</td><td>13</td><td>169</td></tr>
+        <tr><td>4</td><td>16</td><td>14</td><td>196</td></tr>
+        <tr><td>5</td><td>25</td><td>15</td><td>225</td></tr>
+        <tr><td>6</td><td>36</td><td>20</td><td>400</td></tr>
+        <tr><td>7</td><td>49</td><td>25</td><td>625</td></tr>
+        <tr><td>8</td><td>64</td><td>30</td><td>900</td></tr>
+        <tr><td>9</td><td>81</td><td>50</td><td>2500</td></tr>
+        <tr><td>10</td><td>100</td><td>100</td><td>10000</td></tr>
+      </table>
+    </div>
+
+    <!-- CARD 8: ORDEM DAS OPERAÇÕES -->
+    <div class="card card-3" id="expressoes">
+      <h3>🥇 8. Ordem das Operações</h3>
+
+      <p><b>🎯 Sinais de agrupamento (de dentro pra fora):</b></p>
+      <div class="formula-mini">( ) → [ ] → { }</div>
+
+      <p><b>🎯 Operações (dentro de cada agrupamento):</b></p>
+      <div class="formula-mini">
+1º Potências e raízes<br>
+2º × e ÷ (na ordem)<br>
+3º + e − (na ordem)
+      </div>
+
+      <p><b>📖 Exemplo:</b></p>
+      <div class="ex-mini">
+8 : 2³ + (−5)² =<br>
+= 8 : 8 + 25 =<br>
+= 1 + 25 = <b>26</b>
+      </div>
+    </div>
+
+    <!-- CARD 9: POTÊNCIAS DE 2 -->
+    <div class="card card-5">
+      <h3>🔢 9. Potências de 2 (decore!)</h3>
+      <p>Apareceram na lenda do xadrez e podem cair na prova:</p>
+      <table>
+        <tr><th>Potência</th><th>Valor</th></tr>
+        <tr><td>2⁰</td><td>1</td></tr>
+        <tr><td>2¹</td><td>2</td></tr>
+        <tr><td>2²</td><td>4</td></tr>
+        <tr><td>2³</td><td>8</td></tr>
+        <tr><td>2⁴</td><td>16</td></tr>
+        <tr><td>2⁵</td><td>32</td></tr>
+        <tr><td>2⁶</td><td>64</td></tr>
+        <tr><td>2⁷</td><td>128</td></tr>
+        <tr><td>2⁸</td><td>256</td></tr>
+        <tr><td>2⁹</td><td>512</td></tr>
+        <tr><td>2¹⁰</td><td>1024</td></tr>
+      </table>
+    </div>
+
+    <!-- CARD 10: PASSO A PASSO RAIZ -->
+    <div class="card card-6">
+      <h3>📐 10. Passo a Passo da Raiz</h3>
+      <p><b>🎯 Calcular √1764:</b></p>
+      <table>
+        <tr><th>Nº</th><th>Primo</th></tr>
+        <tr><td>1764</td><td>2</td></tr>
+        <tr><td>882</td><td>2</td></tr>
+        <tr><td>441</td><td>3</td></tr>
+        <tr><td>147</td><td>3</td></tr>
+        <tr><td>49</td><td>7</td></tr>
+        <tr><td>7</td><td>7</td></tr>
+        <tr><td>1</td><td></td></tr>
+      </table>
+      <div class="ex-mini">
+1764 = 2²·3²·7²<br>
+√1764 = 2·3·7 = <b>42</b>
+      </div>
+      <div class="destaque-amarelo">💡 Truque: pegue um fator de cada par.</div>
+    </div>
+
+    <!-- CARD 11: MACETES -->
+    <div class="card card-4">
+      <h3>💎 11. Macetes de Ouro</h3>
+      <ul>
+        <li>🎯 <b>(−)<sup>par</sup> = +</b> sempre</li>
+        <li>🎯 <b>(−)<sup>ímpar</sup> = −</b> sempre</li>
+        <li>🎯 <b>a⁰ = 1</b> (decore!)</li>
+        <li>🎯 <b>a¹ = a</b></li>
+        <li>🎯 <b>1ⁿ = 1</b> (qualquer expoente)</li>
+        <li>🎯 <b>0ⁿ = 0</b> (se n &gt; 0)</li>
+        <li>🎯 <b>(−1)ⁿ:</b> par→+1, ímpar→−1</li>
+        <li>🎯 No simulado, conferir: <b>resolveu o que está dentro dos parênteses primeiro?</b></li>
+      </ul>
+    </div>
+
+    <!-- CARD 12: O QUE NÃO PODE -->
+    <div class="card card-2">
+      <h3>🚫 12. O que NÃO pode</h3>
+      <div class="alerta-mini">
+        ❌ <b>√−16 não existe</b> em ℤ (raiz de negativo)
+      </div>
+      <div class="alerta-mini">
+        ❌ <b>Divisão por zero</b> nunca, em nenhuma situação
+      </div>
+      <div class="alerta-mini">
+        ❌ <b>0⁰</b> é indefinido (cuidado!)
+      </div>
+      <div class="alerta-mini">
+        ⚠️ <b>−5² ≠ (−5)²</b><br>
+        −5² = −25 (só o 5 está elevado)<br>
+        (−5)² = +25 (o sinal entra na base)
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QUIZ RELÂMPAGO -->
+  <div class="quiz-rapido" id="quiz">
+    <h2>⚡ Quiz Relâmpago — Teste-se em 60 segundos!</h2>
+    <p style="text-align: center; color: #e1bee7; margin-bottom: 18px; font-style: italic;">Pense na resposta e depois clique em "Revelar". Se acertar 8 das 10, está pronto pro duelo! ⚔️</p>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">1. Quanto vale (−3)⁴?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>+81</b> — base negativa, expoente PAR → resultado positivo. (3·3·3·3 = 81)</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">2. Quanto vale (−2)⁵?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>−32</b> — base negativa, expoente ÍMPAR → resultado negativo. (2⁵ = 32)</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">3. Simplifique 7⁵ · 7³ em uma única potência:</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>7⁸</b> — produto de mesma base, SOMA expoentes (5+3 = 8).</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">4. Simplifique (5²)⁴ em uma única potência:</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>5⁸</b> — potência de potência, MULTIPLICA expoentes (2·4 = 8).</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">5. Quanto vale (−9)⁰?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>1</b> — toda base diferente de zero elevada a zero é 1.</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">6. Quanto vale √169?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>13</b> — pois 13² = 169.</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">7. √50 está entre quais inteiros?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ Entre <b>7 e 8</b> — pois 7² = 49 (menor que 50) e 8² = 64 (maior que 50).</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">8. Escreva 2 500 000 em notação científica:</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>2,5 · 10⁶</b> — vírgula entre 2 e 5, total de 6 casas.</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">9. Calcule: 3² + (−4)² − √25</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>20</b> — primeiro potências e raiz: 9 + 16 − 5 = 20.</div>
+    </div>
+
+    <div class="pergunta">
+      <div class="pergunta-titulo">10. Quanto vale −5² ?</div>
+      <button class="btn-revelar" onclick="this.parentElement.classList.toggle('aberta')">Revelar</button>
+      <div class="resposta">✅ <b>−25</b> — sem parênteses, só o 5 está elevado. O sinal "−" fica na frente. Diferente de (−5)² = +25!</div>
+    </div>
+
+  </div>
+
+  <div class="selo-bottom">
+    🔮 Pergaminho do Aprendiz — Use antes da prova para revisão rápida ⚔️
+  </div>
+
+</div>
+
+<script>
+// Salva quais cards do quiz relâmpago foram abertos
+const CHAVE_RESUMO = 'kit_estudos_resumo_cap4_v1';
+
+function salvarCardsAbertos() {
+  const abertos = [];
+  document.querySelectorAll('.pergunta').forEach((p, i) => {
+    if (p.classList.contains('aberta')) abertos.push(i);
+  });
+  localStorage.setItem(CHAVE_RESUMO, JSON.stringify(abertos));
+}
+
+function carregarCardsAbertos() {
+  try {
+    const dado = localStorage.getItem(CHAVE_RESUMO);
+    if (!dado) return;
+    const abertos = JSON.parse(dado);
+    document.querySelectorAll('.pergunta').forEach((p, i) => {
+      if (abertos.includes(i)) p.classList.add('aberta');
+    });
+  } catch (e) {}
+}
+
+// Intercepta cliques nos botões "Revelar"
+document.addEventListener('DOMContentLoaded', () => {
+  carregarCardsAbertos();
+  document.querySelectorAll('.btn-revelar').forEach(btn => {
+    const handlerOriginal = btn.onclick;
+    btn.onclick = function() {
+      this.parentElement.classList.toggle('aberta');
+      salvarCardsAbertos();
+    };
+  });
+});
+</script>
+
+</body>
+</html>

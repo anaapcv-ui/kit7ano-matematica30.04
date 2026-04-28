@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 Simulado Interativo — Academia de Magos do Multiverso ℤ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1a0033 0%, #0d001a 50%, #001a2e 100%);
+    color: #e8e8f0;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 950px; margin: 0 auto; }
+
+  /* CAPA */
+  .capa {
+    background: linear-gradient(135deg, #4a148c 0%, #1a237e 50%, #006064 100%);
+    border: 3px solid #ba68c8;
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(186, 104, 200, 0.4);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .capa::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: stars 20s linear infinite;
+  }
+  @keyframes stars {
+    from { transform: translate(0,0); }
+    to { transform: translate(-30px,-30px); }
+  }
+  .capa h1 {
+    font-size: 1.9em;
+    color: #fff;
+    text-shadow: 0 0 15px #ba68c8;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .capa .sub { color: #e1bee7; font-size: 1em; position: relative; margin-bottom: 8px; }
+  .capa .narr {
+    color: #fff59d;
+    font-size: 0.95em;
+    font-style: italic;
+    position: relative;
+    border-top: 1px dashed #ba68c8;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  /* PAINEL DE CONTROLE */
+  .painel {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #ba68c8;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .painel-info {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .painel-item {
+    background: rgba(0,0,0,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    color: #e1bee7;
+    border: 1px solid #5c6bc0;
+  }
+  .painel-item b { color: #fff; }
+  .timer {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+    color: #ffd54f !important;
+    border-color: #ffd54f !important;
+  }
+
+  /* MAPA DE QUESTÕES */
+  .mapa-questoes {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #5c6bc0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 18px;
+  }
+  .mapa-questoes-titulo {
+    color: #9fa8da;
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .mapa-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  .mapa-item {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid #5c6bc0;
+    color: #e8e8f0;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85em;
+    transition: all 0.2s;
+  }
+  .mapa-item:hover { transform: scale(1.1); }
+  .mapa-item.respondida {
+    background: rgba(186, 104, 200, 0.3);
+    border-color: #ba68c8;
+  }
+  .mapa-item.atual {
+    background: #ba68c8;
+    color: #1a0033;
+    border-color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(186, 104, 200, 0.6);
+  }
+
+  /* QUESTÃO */
+  .questao {
+    background: rgba(26, 0, 51, 0.7);
+    border: 2px solid #ba68c8;
+    border-radius: 15px;
+    padding: 25px 28px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(10px);
+    display: none;
+  }
+  .questao.ativa { display: block; animation: fadeIn 0.4s; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .questao-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .questao-num {
+    background: linear-gradient(135deg, #6a1b9a, #4a148c);
+    color: #fff;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-weight: 900;
+    font-size: 0.95em;
+    box-shadow: 0 2px 8px rgba(186, 104, 200, 0.4);
+  }
+  .questao-categoria {
+    background: rgba(79, 195, 247, 0.2);
+    color: #81d4fa;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    border: 1px solid #4fc3f7;
+  }
+  .questao-texto {
+    color: #fff;
+    font-size: 1.1em;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+  .questao-texto b {
+    color: #ffd54f;
+    font-family: 'Courier New', monospace;
+    font-size: 1.05em;
+  }
+
+  /* ALTERNATIVAS */
+  .alternativas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .alternativa {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid #5c6bc0;
+    color: #e8e8f0;
+    padding: 12px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    text-align: left;
+    transition: all 0.3s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .alternativa:hover:not(.bloqueada) {
+    background: rgba(186, 104, 200, 0.2);
+    border-color: #ba68c8;
+    transform: translateX(3px);
+  }
+  .alternativa .letra {
+    background: rgba(186, 104, 200, 0.3);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .alternativa.selecionada {
+    background: rgba(186, 104, 200, 0.3);
+    border-color: #ba68c8;
+    box-shadow: 0 0 12px rgba(186, 104, 200, 0.4);
+  }
+  .alternativa.selecionada .letra {
+    background: #ba68c8;
+    color: #1a0033;
+  }
+  /* MODO REVISÃO (após finalizar) */
+  .alternativa.correta {
+    background: rgba(46, 125, 50, 0.4);
+    border-color: #66bb6a;
+  }
+  .alternativa.correta .letra { background: #66bb6a; }
+  .alternativa.errada {
+    background: rgba(183, 28, 28, 0.4);
+    border-color: #ef5350;
+  }
+  .alternativa.errada .letra { background: #ef5350; }
+  .alternativa.bloqueada { cursor: default; }
+
+  /* FEEDBACK PÓS-CORREÇÃO */
+  .feedback {
+    margin-top: 15px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    display: none;
+    animation: fadeIn 0.4s;
+    font-size: 0.95em;
+    line-height: 1.55;
+    background: rgba(0,0,0,0.4);
+    border-left: 4px solid #4fc3f7;
+    color: #b3e5fc;
+  }
+  .feedback.visivel { display: block; }
+  .feedback b { color: #ffd54f; }
+  .feedback .titulo { font-weight: 900; margin-bottom: 6px; color: #fff; }
+  .feedback .passo {
+    background: rgba(0,0,0,0.4);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+    color: #b3e5fc;
+    border-left: 3px solid #66bb6a;
+  }
+
+  /* NAVEGAÇÃO ENTRE QUESTÕES */
+  .navegacao {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+  .btn-nav {
+    background: linear-gradient(135deg, #5c6bc0, #3949ab);
+    color: #fff;
+    border: 2px solid #7986cb;
+    padding: 10px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95em;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 110px;
+  }
+  .btn-nav:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(124, 137, 203, 0.5);
+  }
+  .btn-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .btn-finalizar {
+    background: linear-gradient(135deg, #c2185b, #ad1457) !important;
+    border-color: #ec407a !important;
+  }
+  .btn-finalizar:hover {
+    box-shadow: 0 4px 15px rgba(236, 64, 122, 0.5) !important;
+  }
+
+  /* RESULTADO */
+  .resultado {
+    display: none;
+    background: linear-gradient(135deg, #4a148c 0%, #006064 100%);
+    border: 3px solid #ba68c8;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 40px rgba(186, 104, 200, 0.5);
+  }
+  .resultado.visivel { display: block; animation: surgir 0.8s; }
+  @keyframes surgir {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .resultado h2 {
+    color: #fff;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    text-align: center;
+    text-shadow: 0 0 15px #ba68c8;
+  }
+  .resultado .pontuacao {
+    font-size: 3em;
+    color: #ffd54f;
+    font-weight: 900;
+    text-align: center;
+    margin: 15px 0;
+    text-shadow: 0 0 20px #ffd54f;
+  }
+  .resultado .titulo-mago {
+    background: rgba(0,0,0,0.4);
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin: 15px auto;
+    color: #ffd54f;
+    font-size: 1.2em;
+    font-weight: 700;
+    border: 2px solid #ffd54f;
+    text-align: center;
+    max-width: 400px;
+  }
+  .resultado .mensagem {
+    color: #e1bee7;
+    font-size: 1em;
+    margin: 15px 0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* DESEMPENHO POR CATEGORIA */
+  .categorias {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .categorias h3 {
+    color: #ba68c8;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+  }
+  .categoria-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    color: #e8e8f0;
+  }
+  .categoria-barra {
+    flex: 1;
+    height: 8px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    margin: 0 12px;
+    overflow: hidden;
+  }
+  .categoria-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #66bb6a, #4caf50);
+    border-radius: 4px;
+  }
+  .categoria-fill.medio { background: linear-gradient(90deg, #ffa726, #fb8c00); }
+  .categoria-fill.fraco { background: linear-gradient(90deg, #ef5350, #e53935); }
+
+  .botoes-finais {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .btn-final {
+    background: linear-gradient(135deg, #ba68c8, #6a1b9a);
+    color: #fff;
+    border: none;
+    padding: 14px 26px;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(186, 104, 200, 0.4);
+  }
+  .btn-final:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(186, 104, 200, 0.6);
+  }
+  .btn-final.secundario {
+    background: linear-gradient(135deg, #5c6bc0, #3949ab);
+  }
+
+  /* MODAL CONFIRMAÇÃO */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.visivel { display: flex; }
+  .modal {
+    background: linear-gradient(135deg, #4a148c, #1a237e);
+    border: 2px solid #ba68c8;
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 450px;
+    text-align: center;
+    color: #fff;
+  }
+  .modal h3 {
+    color: #ffd54f;
+    margin-bottom: 12px;
+    font-size: 1.3em;
+  }
+  .modal p { margin-bottom: 18px; line-height: 1.5; }
+  .modal-botoes { display: flex; gap: 10px; justify-content: center; }
+
+  sup { font-size: 75%; vertical-align: super; line-height: 0; }
+
+  /* PAINEL DE SALVAMENTO */
+  .painel-salvar {
+    background: rgba(46, 125, 50, 0.2);
+    border: 2px solid #66bb6a;
+    border-radius: 12px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85em;
+  }
+  .painel-salvar .info-salvar { color: #c8e6c9; flex: 1; min-width: 200px; }
+  .painel-salvar .info-salvar b { color: #fff; }
+  .painel-salvar .auto-salvo::before { content: "💾 "; }
+  .botoes-salvar { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-salvar {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid #66bb6a;
+    color: #c8e6c9;
+    padding: 5px 12px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 700;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+  .btn-salvar:hover {
+    background: rgba(102, 187, 106, 0.3);
+    transform: translateY(-1px);
+  }
+  .btn-salvar.zerar { border-color: #ef5350; color: #ffcdd2; }
+  .btn-salvar.zerar:hover { background: rgba(239, 83, 80, 0.3); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 2px solid #66bb6a;
+    z-index: 1000;
+    font-weight: 700;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s;
+  }
+  .toast.visivel { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 600px) {
+    .alternativas { grid-template-columns: 1fr; }
+    .mapa-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- CAPA -->
+  <div class="capa">
+    <h1>🏆 Simulado da Academia de ℤ 🏆</h1>
+    <div class="sub">Cap. 4 — Potenciação e Raiz Quadrada • 20 questões originais</div>
+    <div class="narr">⚔️ Este é o duelo final, jovem aprendiz! Tempo sugerido: 60 minutos. Você pode pular questões e voltar depois — clique nos números do mapa abaixo. No final, veja seu desempenho por tema!</div>
+  </div>
+
+  <!-- TELA INICIAL -->
+  <div id="tela-prova">
+
+    <!-- PAINEL DE SALVAMENTO -->
+    <div class="painel-salvar">
+      <div class="info-salvar">
+        <span class="auto-salvo">Suas respostas e o tempo são salvos automaticamente</span><br>
+        <span style="font-size: 0.9em; opacity: 0.85;">Último salvamento: <b id="ultimo-salvar">—</b></span>
+      </div>
+      <div class="botoes-salvar">
+        <button class="btn-salvar" onclick="exportarProgresso()">📥 Exportar</button>
+        <button class="btn-salvar" onclick="document.getElementById('input-importar').click()">📤 Importar</button>
+        <button class="btn-salvar zerar" onclick="zerarProgresso()">🗑️ Zerar</button>
+        <input type="file" id="input-importar" accept=".json" style="display:none" onchange="importarProgresso(event)">
+      </div>
+    </div>
+
+    <!-- PAINEL -->
+    <div class="painel">
+      <div class="painel-info">
+        <div class="painel-item">📝 Respondidas: <b id="qtd-respondidas">0</b>/20</div>
+        <div class="painel-item">⚪ Em branco: <b id="qtd-branco">20</b></div>
+      </div>
+      <div class="painel-item timer" id="timer">⏱️ 00:00</div>
+    </div>
+
+    <!-- MAPA DE QUESTÕES -->
+    <div class="mapa-questoes">
+      <div class="mapa-questoes-titulo">🗺️ Mapa do duelo (clique para pular para a questão)</div>
+      <div class="mapa-grid" id="mapa-grid"></div>
+    </div>
+
+    <!-- QUESTÕES -->
+    <div id="questoes-container"></div>
+
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="resultado" id="resultado">
+    <h2 id="resultado-titulo">⚔️ Duelo Concluído!</h2>
+    <div class="pontuacao" id="pontuacao-final">0 / 20</div>
+    <div class="titulo-mago" id="titulo-mago">🔮 Aprendiz</div>
+    <div class="mensagem" id="resultado-mensagem"></div>
+
+    <div class="categorias" id="categorias-box">
+      <h3>📊 Desempenho por tema:</h3>
+      <div id="categorias-lista"></div>
+    </div>
+
+    <div class="botoes-finais">
+      <button class="btn-final" onclick="revisarRespostas()">📖 Revisar respostas</button>
+      <button class="btn-final secundario" onclick="reiniciar()">🔄 Refazer simulado</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">💾 Salvo!</div>
+
+<!-- MODAL CONFIRMAÇÃO FINALIZAR -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal">
+    <h3>⚔️ Finalizar o duelo?</h3>
+    <p id="modal-texto">Tem certeza que quer encerrar o simulado? Depois disso, você verá o resultado e a correção.</p>
+    <div class="modal-botoes">
+      <button class="btn-final secundario" onclick="fecharModal()">Voltar</button>
+      <button class="btn-final" onclick="finalizar()">Sim, finalizar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questoes = [
+  // POTENCIAÇÃO BÁSICA E SINAIS (1-4)
+  {
+    pergunta: 'Qual é o valor de <b>(−6)²</b>?',
+    alternativas: ['−36', '+36', '−12', '+12'],
+    correta: 1,
+    categoria: 'Potenciação - sinais',
+    explicacao: 'Base negativa com expoente <b>par (2)</b> → resultado positivo.',
+    passo: '(−6)² = (−6)·(−6) = +36'
+  },
+  {
+    pergunta: 'Qual é o valor de <b>(−2)⁸</b>?',
+    alternativas: ['−256', '+256', '−16', '+16'],
+    correta: 1,
+    categoria: 'Potenciação - sinais',
+    explicacao: 'Base negativa com expoente <b>par (8)</b> → resultado positivo.',
+    passo: '2⁸ = 256, então (−2)⁸ = +256'
+  },
+  {
+    pergunta: 'Qual é o valor de <b>(−1)⁴⁷</b>?',
+    alternativas: ['−47', '+47', '−1', '+1'],
+    correta: 2,
+    categoria: 'Potenciação - sinais',
+    explicacao: '(−1) elevado a expoente <b>ímpar (47)</b> → resultado <b>−1</b>.',
+    passo: '(−1)<sup>par</sup> = +1 &nbsp; e &nbsp; (−1)<sup>ímpar</sup> = −1'
+  },
+  {
+    pergunta: 'Sobre o sinal do resultado de <b>(−3)<sup>x</sup></b>, é correto afirmar que:',
+    alternativas: [
+      'O resultado é sempre negativo, qualquer x.',
+      'O resultado é sempre positivo, qualquer x.',
+      'Positivo se x for par, negativo se x for ímpar.',
+      'Negativo se x for par, positivo se x for ímpar.'
+    ],
+    correta: 2,
+    categoria: 'Potenciação - sinais',
+    explicacao: 'Regra de ouro da potenciação: base negativa com expoente <b>par</b> dá resultado <b>positivo</b>; expoente <b>ímpar</b> dá resultado <b>negativo</b>.'
+  },
+  // PROPRIEDADES (5-7)
+  {
+    pergunta: 'Simplificando <b>4⁵ · 4³ · 4²</b> em uma única potência, obtém-se:',
+    alternativas: ['4³⁰', '4¹⁰', '12¹⁰', '64¹⁰'],
+    correta: 1,
+    categoria: 'Propriedades',
+    explicacao: 'Produto de potências de mesma base → mantém a base e <b>SOMA</b> os expoentes.',
+    passo: '4⁵ · 4³ · 4² = 4⁵⁺³⁺² = 4¹⁰'
+  },
+  {
+    pergunta: 'Simplificando <b>(−5)¹² : (−5)⁷</b>, obtém-se:',
+    alternativas: ['(−5)⁵', '(−5)¹⁹', '1⁵', '0'],
+    correta: 0,
+    categoria: 'Propriedades',
+    explicacao: 'Quociente de potências de mesma base → mantém a base e <b>SUBTRAI</b> os expoentes.',
+    passo: '(−5)¹² : (−5)⁷ = (−5)¹²⁻⁷ = (−5)⁵'
+  },
+  {
+    pergunta: 'Simplificando <b>[(−2)³]⁵</b>, obtém-se:',
+    alternativas: ['(−2)⁸', '(−2)¹⁵', '(−2)²', '(−6)⁵'],
+    correta: 1,
+    categoria: 'Propriedades',
+    explicacao: 'Potência de potência → mantém a base e <b>MULTIPLICA</b> os expoentes.',
+    passo: '[(−2)³]⁵ = (−2)³ˣ⁵ = (−2)¹⁵'
+  },
+  // EXPOENTE ZERO E ARMADILHAS (8-9)
+  {
+    pergunta: 'O valor de <b>(−10)⁰ + 7¹ − 1²⁰⁰</b> é:',
+    alternativas: ['6', '7', '8', '−1'],
+    correta: 1,
+    categoria: 'Propriedades',
+    explicacao: 'Lembre: (−10)⁰ = 1, &nbsp; 7¹ = 7, &nbsp; 1²⁰⁰ = 1.',
+    passo: '1 + 7 − 1 = 7'
+  },
+  {
+    pergunta: 'Marta resolveu <b>−5²</b> e respondeu <b>+25</b>. O resultado correto é:',
+    alternativas: [
+      '+25 (Marta acertou)',
+      '−25 (sem parênteses, só o 5 é elevado)',
+      '−10',
+      '+10'
+    ],
+    correta: 1,
+    categoria: 'Armadilhas',
+    explicacao: '<b>Armadilha clássica!</b> Em −5², só o número 5 está sendo elevado ao quadrado. O sinal "−" fica do lado de fora.',
+    passo: '−5² = −(5²) = −25 &nbsp;&nbsp; ≠ &nbsp;&nbsp; (−5)² = +25'
+  },
+  // RAIZ QUADRADA (10-13)
+  {
+    pergunta: 'Calcule <b>√324</b> usando decomposição em fatores primos:',
+    alternativas: ['16', '18', '24', '162'],
+    correta: 1,
+    categoria: 'Raiz quadrada',
+    explicacao: '324 = 2·2·3·3·3·3 = 2² · 3⁴',
+    passo: '√324 = 2 · 3² = 2 · 9 = 18'
+  },
+  {
+    pergunta: 'O valor de <b>√576</b> é:',
+    alternativas: ['22', '24', '26', '28'],
+    correta: 1,
+    categoria: 'Raiz quadrada',
+    explicacao: '576 = 2⁶ · 3² (decomposição em fatores primos).',
+    passo: '√576 = 2³ · 3 = 8 · 3 = 24 &nbsp;(confira: 24² = 576 ✓)'
+  },
+  {
+    pergunta: 'A raiz quadrada de <b>√130</b> está compreendida entre os números inteiros:',
+    alternativas: ['10 e 11', '11 e 12', '12 e 13', '64 e 65'],
+    correta: 1,
+    categoria: 'Raiz quadrada',
+    explicacao: '11² = 121 (menor que 130) e 12² = 144 (maior que 130).',
+    passo: 'Logo, √130 está entre 11 e 12'
+  },
+  {
+    pergunta: 'Qual destas afirmações é <b>FALSA</b>?',
+    alternativas: ['√0 = 0', '√1 = 1', '√(−16) = −4 (em ℤ)', '√100 = 10'],
+    correta: 2,
+    categoria: 'Raiz quadrada',
+    explicacao: 'Esta é falsa! <b>Não existe raiz quadrada de número negativo</b> no conjunto dos inteiros (ℤ). As outras alternativas estão corretas.'
+  },
+  // NOTAÇÃO CIENTÍFICA (14-15)
+  {
+    pergunta: 'A massa de Júpiter é de aproximadamente <b>1.900.000.000.000.000.000.000.000.000 kg</b>. Em notação científica:',
+    alternativas: ['1,9 · 10²⁵', '1,9 · 10²⁷', '19 · 10²⁵', '1,9 · 10²⁴'],
+    correta: 1,
+    categoria: 'Notação científica',
+    explicacao: 'O número tem 1, depois 9, e mais 26 zeros. Colocando a vírgula entre 1 e 9, conta-se 27 casas que ela "andou".',
+    passo: '1.900...000 (27 casas no total) = 1,9 · 10²⁷'
+  },
+  {
+    pergunta: 'O número <b>5,8 · 10⁴</b>, escrito na forma decimal, equivale a:',
+    alternativas: ['5 800', '58 000', '580 000', '5 800 000'],
+    correta: 1,
+    categoria: 'Notação científica',
+    explicacao: 'Move a vírgula 4 casas para a direita (igual ao expoente do 10).',
+    passo: '5,8 · 10⁴ = 58 000'
+  },
+  // EXPRESSÕES NUMÉRICAS (16-18)
+  {
+    pergunta: 'Calcule a expressão: <b>2³ + (−3)² − √49</b>',
+    alternativas: ['10', '24', '4', '0'],
+    correta: 0,
+    categoria: 'Expressões numéricas',
+    explicacao: 'Primeiro as potências e raízes, depois somas e subtrações.',
+    passo: '2³ + (−3)² − √49 = 8 + 9 − 7 = 17 − 7 = 10'
+  },
+  {
+    pergunta: 'Calcule a expressão: <b>(−4)² · (−1)⁵ + √100</b>',
+    alternativas: ['−6', '+6', '+26', '−26'],
+    correta: 0,
+    categoria: 'Expressões numéricas',
+    explicacao: '(−4)² = +16 (par), (−1)⁵ = −1 (ímpar), √100 = 10. Depois multiplica e soma.',
+    passo: '(+16) · (−1) + 10 = −16 + 10 = −6'
+  },
+  {
+    pergunta: 'Calcule a expressão: <b>3⁴ : 9 + (−2)⁴ · √25</b>',
+    alternativas: ['89', '25', '41', '169'],
+    correta: 0,
+    categoria: 'Expressões numéricas',
+    explicacao: 'Primeiro potências/raízes, depois × e ÷, por último +.',
+    passo: '81 : 9 + 16 · 5 = 9 + 80 = 89'
+  },
+  // APLICAÇÕES (19-20)
+  {
+    pergunta: 'Foram formados <b>4 grupos com 4 estudantes cada</b>, e cada estudante deve produzir <b>4 desenhos</b>. Quantos desenhos serão produzidos no total?',
+    alternativas: ['12 desenhos (= 4·3)', '16 desenhos (= 4²)', '64 desenhos (= 4³)', '256 desenhos (= 4⁴)'],
+    correta: 2,
+    categoria: 'Aplicações',
+    explicacao: 'São 4 grupos × 4 estudantes × 4 desenhos.',
+    passo: '4 · 4 · 4 = 4³ = 64 desenhos'
+  },
+  {
+    pergunta: 'Uma sala de aula tem o formato quadrado e área de <b>196 m²</b>. Qual é a medida do lado dessa sala?',
+    alternativas: ['12 m', '13 m', '14 m', '15 m'],
+    correta: 2,
+    categoria: 'Aplicações',
+    explicacao: 'Sala quadrada: A = ℓ². Para achar o lado, calculamos a raiz da área.',
+    passo: 'ℓ = √196 = 14 m &nbsp;(confira: 14² = 196 ✓)'
+  }
+];
+
+let questaoAtual = 0;
+let respostas = new Array(questoes.length).fill(null);
+let finalizado = false;
+let segundos = 0;
+let timerInterval;
+
+function montarQuestoes() {
+  const container = document.getElementById('questoes-container');
+  questoes.forEach((q, i) => {
+    const letras = ['a', 'b', 'c', 'd'];
+    const altsHTML = q.alternativas.map((alt, j) =>
+      `<button class="alternativa" data-q="${i}" data-alt="${j}" onclick="selecionar(${i}, ${j})">
+        <span class="letra">${letras[j]}</span>
+        <span>${alt}</span>
+      </button>`
+    ).join('');
+
+    const ehUltima = (i === questoes.length - 1);
+
+    container.innerHTML += `
+      <div class="questao ${i === 0 ? 'ativa' : ''}" id="q-${i}">
+        <div class="questao-cabecalho">
+          <div class="questao-num">Questão ${i+1} / ${questoes.length}</div>
+          <div class="questao-categoria">📚 ${q.categoria}</div>
+        </div>
+        <div class="questao-texto">${q.pergunta}</div>
+        <div class="alternativas" id="alts-${i}">${altsHTML}</div>
+        <div class="feedback" id="fb-${i}"></div>
+        <div class="navegacao">
+          <button class="btn-nav" ${i === 0 ? 'disabled' : ''} onclick="irPara(${i-1})">← Anterior</button>
+          ${ehUltima
+            ? `<button class="btn-nav btn-finalizar" onclick="abrirModal()">⚔️ Finalizar Duelo</button>`
+            : `<button class="btn-nav" onclick="irPara(${i+1})">Próxima →</button>`
+          }
+        </div>
+      </div>
+    `;
+  });
+}
+
+function montarMapa() {
+  const mapa = document.getElementById('mapa-grid');
+  let html = '';
+  for (let i = 0; i < questoes.length; i++) {
+    html += `<div class="mapa-item ${i === 0 ? 'atual' : ''}" id="mapa-${i}" onclick="irPara(${i})">${i+1}</div>`;
+  }
+  mapa.innerHTML = html;
+}
+
+function irPara(i) {
+  if (i < 0 || i >= questoes.length) return;
+  document.querySelectorAll('.questao').forEach(q => q.classList.remove('ativa'));
+  document.querySelectorAll('.mapa-item').forEach(m => m.classList.remove('atual'));
+  document.getElementById(`q-${i}`).classList.add('ativa');
+  document.getElementById(`mapa-${i}`).classList.add('atual');
+  questaoAtual = i;
+  document.getElementById(`q-${i}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selecionar(iQuestao, iAlt) {
+  if (finalizado) return;
+  respostas[iQuestao] = iAlt;
+  const altsContainer = document.getElementById(`alts-${iQuestao}`);
+  altsContainer.querySelectorAll('.alternativa').forEach((btn, j) => {
+    btn.classList.toggle('selecionada', j === iAlt);
+  });
+  document.getElementById(`mapa-${iQuestao}`).classList.add('respondida');
+  atualizarPainel();
+}
+
+function atualizarPainel() {
+  const respondidas = respostas.filter(r => r !== null).length;
+  document.getElementById('qtd-respondidas').textContent = respondidas;
+  document.getElementById('qtd-branco').textContent = questoes.length - respondidas;
+}
+
+function iniciarTimer() {
+  timerInterval = setInterval(() => {
+    segundos++;
+    const min = Math.floor(segundos / 60).toString().padStart(2, '0');
+    const seg = (segundos % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = `⏱️ ${min}:${seg}`;
+  }, 1000);
+}
+
+function abrirModal() {
+  const respondidas = respostas.filter(r => r !== null).length;
+  const branco = questoes.length - respondidas;
+  const texto = branco > 0
+    ? `Você ainda tem <b>${branco} questão${branco > 1 ? 'ões' : ''} em branco</b>. Tem certeza que quer finalizar?`
+    : 'Você respondeu todas as questões. Pronto para conferir o resultado?';
+  document.getElementById('modal-texto').innerHTML = texto;
+  document.getElementById('modal-confirmar').classList.add('visivel');
+}
+
+function fecharModal() {
+  document.getElementById('modal-confirmar').classList.remove('visivel');
+}
+
+function finalizar() {
+  fecharModal();
+  finalizado = true;
+  clearInterval(timerInterval);
+  let acertos = 0;
+  const desempenhoCategoria = {};
+
+  questoes.forEach((q, i) => {
+    if (!desempenhoCategoria[q.categoria]) {
+      desempenhoCategoria[q.categoria] = { acertos: 0, total: 0 };
+    }
+    desempenhoCategoria[q.categoria].total++;
+
+    const altsContainer = document.getElementById(`alts-${i}`);
+    const botoes = altsContainer.querySelectorAll('.alternativa');
+    const respUsuario = respostas[i];
+    const correto = (respUsuario === q.correta);
+    if (correto) {
+      acertos++;
+      desempenhoCategoria[q.categoria].acertos++;
+    }
+
+    botoes.forEach((btn, j) => {
+      btn.classList.add('bloqueada');
+      if (j === q.correta) btn.classList.add('correta');
+      else if (j === respUsuario) btn.classList.add('errada');
+    });
+
+    const fb = document.getElementById(`fb-${i}`);
+    let icone, titulo;
+    if (correto) { icone = '✅'; titulo = 'Acertou!'; }
+    else if (respUsuario === null) { icone = '⚪'; titulo = 'Em branco'; }
+    else { icone = '❌'; titulo = 'Errou'; }
+
+    let conteudo = `<div class="titulo">${icone} ${titulo}</div>${q.explicacao}`;
+    if (q.passo) conteudo += `<div class="passo">${q.passo}</div>`;
+    fb.innerHTML = conteudo;
+    fb.classList.add('visivel');
+  });
+
+  document.getElementById('pontuacao-final').textContent = `${acertos} / ${questoes.length}`;
+
+  let titulo, mensagem, tituloMago;
+  if (acertos >= 18) {
+    titulo = '🏆 EXCELENTE! 🏆';
+    tituloMago = '👑 Arquimago Supremo de ℤ';
+    mensagem = `Acertou ${acertos} de 20! Você dominou o conteúdo. Pode encarar a prova com total confiança! ⚔️✨`;
+  } else if (acertos >= 14) {
+    titulo = '⚔️ Muito Bom! ⚔️';
+    tituloMago = '🌟 Mestre dos Feitiços';
+    mensagem = `Acertou ${acertos} de 20. Está bem preparada! Revise as questões que errou e estará pronta.`;
+  } else if (acertos >= 10) {
+    titulo = '🔮 Está no Caminho!';
+    tituloMago = '⭐ Mago Aprendiz Avançado';
+    mensagem = `Acertou ${acertos} de 20. Releia as explicações das questões erradas e o resumo. Depois tente de novo!`;
+  } else if (acertos >= 6) {
+    titulo = '📚 Precisa Treinar Mais!';
+    tituloMago = '🌱 Aprendiz em Formação';
+    mensagem = `Acertou ${acertos} de 20. Volte na Leitura Guiada — especialmente regra de sinais e propriedades. Você consegue!`;
+  } else {
+    titulo = '💪 Não desista, aprendiz!';
+    tituloMago = '🐣 Iniciante na Academia';
+    mensagem = `Acertou ${acertos} de 20. Reveja com calma a Leitura Guiada e o Resumo. Cada erro é um aprendizado! ⚔️`;
+  }
+  document.getElementById('resultado-titulo').textContent = titulo;
+  document.getElementById('titulo-mago').innerHTML = tituloMago;
+  document.getElementById('resultado-mensagem').textContent = mensagem;
+
+  // Desempenho por categoria
+  const lista = document.getElementById('categorias-lista');
+  lista.innerHTML = '';
+  for (const cat in desempenhoCategoria) {
+    const d = desempenhoCategoria[cat];
+    const pct = (d.acertos / d.total) * 100;
+    let classeBarra = '';
+    if (pct >= 70) classeBarra = '';
+    else if (pct >= 40) classeBarra = 'medio';
+    else classeBarra = 'fraco';
+    lista.innerHTML += `
+      <div class="categoria-item">
+        <span style="min-width: 160px;">${cat}</span>
+        <div class="categoria-barra"><div class="categoria-fill ${classeBarra}" style="width: ${pct}%"></div></div>
+        <b>${d.acertos}/${d.total}</b>
+      </div>
+    `;
+  }
+
+  document.getElementById('resultado').classList.add('visivel');
+  setTimeout(() => {
+    document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+function revisarRespostas() {
+  irPara(0);
+}
+
+function reiniciar() {
+  if (!confirm('Refazer o simulado do zero? Todo o progresso será apagado.')) return;
+  questaoAtual = 0;
+  respostas = new Array(questoes.length).fill(null);
+  finalizado = false;
+  segundos = 0;
+  document.getElementById('timer').textContent = '⏱️ 00:00';
+  document.getElementById('resultado').classList.remove('visivel');
+  document.getElementById('questoes-container').innerHTML = '';
+  document.getElementById('mapa-grid').innerHTML = '';
+  montarQuestoes();
+  montarMapa();
+  atualizarPainel();
+  clearInterval(timerInterval);
+  iniciarTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// INICIALIZAÇÃO
+montarQuestoes();
+montarMapa();
+atualizarPainel();
+
+// =================================================
+// SISTEMA DE PERSISTÊNCIA
+// =================================================
+const CHAVE_STORAGE = 'kit_estudos_simulado_cap4_v1';
+
+function salvarProgresso() {
+  try {
+    const estado = {
+      respostas,
+      questaoAtual,
+      finalizado,
+      segundos,
+      dataSalvamento: new Date().toISOString()
+    };
+    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(estado));
+    atualizarRotuloUltimoSalvar(estado.dataSalvamento);
+  } catch (e) {
+    console.error('Erro ao salvar:', e);
+  }
+}
+
+function carregarProgresso() {
+  try {
+    const dado = localStorage.getItem(CHAVE_STORAGE);
+    if (!dado) return false;
+    const estado = JSON.parse(dado);
+
+    // Restaura respostas
+    if (estado.respostas) {
+      for (let i = 0; i < respostas.length; i++) {
+        respostas[i] = estado.respostas[i];
+      }
+    }
+
+    // Restaura tempo
+    if (typeof estado.segundos === 'number') {
+      segundos = estado.segundos;
+      const min = Math.floor(segundos / 60).toString().padStart(2, '0');
+      const seg = (segundos % 60).toString().padStart(2, '0');
+      document.getElementById('timer').textContent = `⏱️ ${min}:${seg}`;
+    }
+
+    // Restaura visualmente cada resposta
+    for (let i = 0; i < respostas.length; i++) {
+      if (respostas[i] !== null && respostas[i] !== undefined) {
+        const altsContainer = document.getElementById(`alts-${i}`);
+        if (altsContainer) {
+          altsContainer.querySelectorAll('.alternativa').forEach((btn, j) => {
+            btn.classList.toggle('selecionada', j === respostas[i]);
+          });
+          const mapaItem = document.getElementById(`mapa-${i}`);
+          if (mapaItem) mapaItem.classList.add('respondida');
+        }
+      }
+    }
+    atualizarPainel();
+
+    // Se já estava finalizado, refinaliza para mostrar correção
+    if (estado.finalizado) {
+      finalizar();
+    } else {
+      // Volta para a questão em que estava
+      if (typeof estado.questaoAtual === 'number') {
+        irPara(estado.questaoAtual);
+      }
+    }
+
+    atualizarRotuloUltimoSalvar(estado.dataSalvamento);
+    return true;
+  } catch (e) {
+    console.error('Erro ao carregar:', e);
+    return false;
+  }
+}
+
+function atualizarRotuloUltimoSalvar(iso) {
+  if (!iso) {
+    document.getElementById('ultimo-salvar').textContent = '—';
+    return;
+  }
+  const d = new Date(iso);
+  const data = d.toLocaleDateString('pt-BR');
+  const hora = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('ultimo-salvar').textContent = `${data} às ${hora}`;
+}
+
+function mostrarToast(mensagem) {
+  const toast = document.getElementById('toast');
+  toast.textContent = mensagem;
+  toast.classList.add('visivel');
+  setTimeout(() => toast.classList.remove('visivel'), 2200);
+}
+
+function exportarProgresso() {
+  const dado = localStorage.getItem(CHAVE_STORAGE);
+  if (!dado) {
+    alert('Ainda não há progresso para exportar. Responda pelo menos uma questão primeiro.');
+    return;
+  }
+  const blob = new Blob([dado], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const data = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+  a.href = url;
+  a.download = `progresso_simulado_cap4_${data}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('📥 Progresso exportado!');
+}
+
+function importarProgresso(event) {
+  const arquivo = event.target.files[0];
+  if (!arquivo) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      JSON.parse(e.target.result);
+      if (confirm('Isso vai substituir o progresso atual pelo do arquivo. Continuar?')) {
+        localStorage.setItem(CHAVE_STORAGE, e.target.result);
+        mostrarToast('📤 Progresso importado!');
+        setTimeout(() => window.location.reload(), 800);
+      }
+    } catch (err) {
+      alert('Arquivo inválido. Use um arquivo de progresso exportado anteriormente.');
+    }
+  };
+  reader.readAsText(arquivo);
+  event.target.value = '';
+}
+
+function zerarProgresso() {
+  if (!confirm('Tem certeza? Todo o progresso e o tempo serão apagados.')) return;
+  localStorage.removeItem(CHAVE_STORAGE);
+  mostrarToast('🗑️ Progresso apagado!');
+  setTimeout(() => window.location.reload(), 800);
+}
+
+// Sobrescreve funções para salvar automaticamente
+const _selecionarOriginal = selecionar;
+selecionar = function(iQuestao, iAlt) {
+  _selecionarOriginal(iQuestao, iAlt);
+  if (!finalizado) salvarProgresso();
+};
+
+const _irParaOriginal = irPara;
+irPara = function(i) {
+  _irParaOriginal(i);
+  if (localStorage.getItem(CHAVE_STORAGE) && !finalizado) {
+    salvarProgresso();
+  }
+};
+
+const _finalizarOriginal = finalizar;
+finalizar = function() {
+  _finalizarOriginal();
+  salvarProgresso();
+};
+
+// Inicialização: carrega progresso ANTES de iniciar timer
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    carregarProgresso();
+    if (!finalizado) iniciarTimer();
+  }, 100);
+});
+</script>
+
+</body>
+</html>
